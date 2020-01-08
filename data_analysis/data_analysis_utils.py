@@ -1,11 +1,13 @@
 import nltk
 from nltk.stem import WordNetLemmatizer
+from nltk.stem import PorterStemmer
 from nltk.corpus import wordnet
 from nltk.tokenize import word_tokenize
 import spacy
 
 nlp = spacy.load("en_core_web_sm")
 lemmatizer = WordNetLemmatizer()
+stemmer = PorterStemmer()
 
 def get_wordnet_pos(treebank_tag):
     """
@@ -25,19 +27,16 @@ def get_wordnet_pos(treebank_tag):
     else:
         return ""
 
-def get_lemmatize_word(phrase):
+def get_lemmatize_word(word):
     """
     Lemmatize the given word
     :param word: string
     :return: lemmatized word
     """
-    result = []
-    for word in phrase:
-        token = word_tokenize(word)
-        pos_wn = nltk.pos_tag(token)[0][1]
-        pos = "n" if get_wordnet_pos(pos_wn) == "" else get_wordnet_pos(pos_wn)
-        result.append(lemmatizer.lemmatize(word, pos=pos))
-    return result
+    token = word_tokenize(word)
+    pos_wn = nltk.pos_tag(token)[0][1]
+    pos = "n" if get_wordnet_pos(pos_wn) == "" else get_wordnet_pos(pos_wn)
+    return lemmatizer.lemmatize(word, pos=pos)
 
 def ie_preprocess(phrase):
     """
@@ -48,14 +47,28 @@ def ie_preprocess(phrase):
     return nltk.pos_tag(nltk.word_tokenize(phrase))
 
 
-def get_combined_representation(phrase, lemmas, pos, concepts):
+def get_combined_representation(phrase, lemmas, pos, concepts, ner=[]):
     result = []
-    for v in zip(phrase, lemmas, pos, concepts):
-        result.append(v[0]+v[1]+v[2]+v[3])
+    if len(ner) != 0:
+        for v in zip(phrase, lemmas, pos, concepts, ner):
+            result.append(v[0]+v[1]+v[2]+v[3]+v[4])
+    else:
+        for v in zip(phrase, lemmas, pos, concepts):
+            result.append(v[0]+v[1]+v[2]+v[3])
     return result
 
 
-def ner_tool(row, method="none"):
+def return_replaced_concepts(tokens, concepts, method="keep"):
+    if method=="keep":
+        return concepts
+    elif method=="lemma":
+        return [get_lemmatize_word(tokens[i]) if concepts[i] == "O" else concepts[i] for i in range(0, len(tokens))]
+    elif method=="stem":
+        return [stemmer.stem(tokens[i]) if concepts[i] == "O" else concepts[i] for i in range(0, len(tokens))]
+    elif method=="word":
+        return [tokens[i] if concepts[i] == "O" else concepts[i] for i in range(0, len(tokens))]
+
+def ner_tool(row, method="none", replace_O="keep", add_ner_feature=False):
     """
     Replace entities detected into the given phrase with
     an entity definition
@@ -68,8 +81,8 @@ def ner_tool(row, method="none"):
 
     phrase, lemmas, pos, concepts = row["tokens"], row["lemmas"], row["pos"], row["concepts"]
 
-    if method=="none":
-        return phrase, lemmas, pos, concepts, row["combined"]
+    if method=="none" and replace_O=="keep":
+        return phrase, lemmas, pos, concepts, [], row["combined"]
 
     if method=="spacy":
         doc = nlp(" ".join(phrase))
@@ -108,4 +121,11 @@ def ner_tool(row, method="none"):
         else:
             i = i + 1
 
-    return phrase, lemmas, pos, concepts, get_combined_representation(phrase, lemmas, pos, concepts)
+    new_concepts = return_replaced_concepts(phrase, concepts, method=replace_O)
+
+    if add_ner_feature:
+        return row["tokens"], row["lemmas"], row["pos"], row["concepts"], phrase, \
+               get_combined_representation(row["tokens"], row["lemmas"], row["pos"], row["concepts"], phrase)
+
+    return phrase, lemmas, pos, new_concepts, [],\
+           get_combined_representation(phrase, lemmas, pos, new_concepts)
