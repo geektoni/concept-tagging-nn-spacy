@@ -23,7 +23,7 @@ def convert_dataset_into_spacy(df):
 
         for i in range(0, len(tokens)):
             if concepts[i] != "O":
-                entities.append((total_words, total_words+len(tokens[i])-1, concepts[i]))
+                entities.append((total_words, total_words+len(tokens[i])-1, concepts[i].split("-")[1]))
             total_words += len(concepts)+1 # Add the length of the current token plus a space
 
         data.append(
@@ -92,33 +92,44 @@ if __name__ == "__main__":
     with nlp.disable_pipes(*other_pipe):
         if args.model is None:
             optimizer = nlp.begin_training()
-        else:
-            optimizer = nlp.resume_training()
 
-    # Start the training procedure
-    for iter in tqdm(range(args.iterations)):
+        # Start the training procedure
+        for iter in tqdm(range(args.iterations)):
 
-        print(" [*] Starting iteration " + str(iter))
+            print(" [*] Starting iteration " + str(iter))
 
-        random.shuffle(train)
-        losses = {}
+            random.shuffle(train)
+            losses = {}
 
-        batches = minibatch(train, size=compounding(4., 32., 1.001))
+            batches = minibatch(train, size=compounding(4., 32., 1.001))
 
-        for batch in tqdm(batches):
-            texts, annotations = zip(*batch)
-            nlp.update(
-                texts,
-                annotations,
-                drop=0.2,
-                sgd=optimizer,
-                losses=losses
-            )
+            for batch in tqdm(batches):
+                texts, annotations = zip(*batch)
+                nlp.update(
+                    texts,
+                    annotations,
+                    drop=0.2,
+                    sgd=optimizer,
+                    losses=losses
+                )
+            print(losses)
 
     new_model = nlp
 
     # Evaluate the model on the test data
     test_result = evaluate(new_model, test)
+
+    # test the saved model
+    print("Loading from ", args.output)
+    nlp2 = spacy.load(args.output)
+    for text, _ in train[0:5]:
+        doc = nlp2(text)
+        if len(doc.ents) > 0:
+            print(text, )
+            print("Ground Truth", [ c[2] for c in _.get('entities')] )
+            print("Entities: ", [(ent.text, ent.label_) for ent in doc.ents])
+            print("Tokens: ", [(t.text, t.ent_type_, t.ent_iob) for t in doc])
+            print("")
 
     # Print the test results
     print(test_result)
