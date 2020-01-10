@@ -14,9 +14,12 @@ with (open(args.filename[0], "rb")) as openfile:
         except EOFError:
             break
 
-print(objects[0].columns)
+# Print the columns of the file(s) and its content
+for o in objects:
+    print(o.columns)
 print(objects)
 
-# Save pickle to csv file to be inspected
+# Save pickle to csv file(s) to be inspected
 if args.save:
-    objects[0].to_csv("saved_pickle.csv")
+    for index, o in enumerate(objects):
+        objects[0].to_csv("saved_pickle_{}.csv", index)
