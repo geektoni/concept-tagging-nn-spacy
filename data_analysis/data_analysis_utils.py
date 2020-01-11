@@ -65,7 +65,9 @@ tagdict = [
 "WRB",
 ":",
 "$"]
-print(len(tagdict))
+
+nerdict = ["PERSON", "NORP", "FAC", "ORG", "GPE", "LOC", "PRODUCT", "EVENT", "WORK_OF_ART", "LAW",
+           "LANGUAGE", "DATE", "TIME", "PERCENT", "MONEY", "QUANTITY", "ORDINAL", "CARDINAL"]
 
 nlp = spacy.load("en_core_web_sm")
 lemmatizer = WordNetLemmatizer()
@@ -130,7 +132,8 @@ def return_replaced_concepts(tokens, concepts, method="keep"):
     elif method=="word":
         return [tokens[i] if concepts[i] == "O" else concepts[i] for i in range(0, len(tokens))]
 
-def ner_tool(row, method="none", replace_O="keep", add_ner_feature=False):
+
+def ner_tool(row, method="none", replace_O="keep"):
     """
     Replace entities detected into the given phrase with
     an entity definition
@@ -173,24 +176,38 @@ def ner_tool(row, method="none", replace_O="keep", add_ner_feature=False):
                 phrase[i] = "_{}".format(result[i][1].lower())
 
     # Remove duplicate occurrences
-    i = 0
-    while i < len(phrase) - 1:
-        if phrase[i] == phrase[i + 1] and phrase[i].startswith("_"):
-            del phrase[i]
-            del concepts[i]
-            del lemmas[i]
-            del pos[i]
-        else:
-            i = i + 1
+    #i = 0
+    #while i < len(phrase) - 1:
+    #    if phrase[i] == phrase[i + 1] and phrase[i].startswith("_"):
+    #        del phrase[i]
+    #        del concepts[i]
+    #        del lemmas[i]
+    #        del pos[i]
+    #    else:
+    #        i = i + 1
 
-    new_concepts = return_replaced_concepts(phrase, concepts, method=replace_O)
+    #new_concepts = return_replaced_concepts(phrase, concepts, method=replace_O)
 
-    if add_ner_feature:
-        return row["tokens"], row["lemmas"], row["pos"], row["concepts"], phrase, \
-               get_combined_representation(row["tokens"], row["lemmas"], row["pos"], row["concepts"], phrase)
+    return row["tokens"], row["lemmas"], row["pos"], row["concepts"], phrase, \
+            get_combined_representation(row["tokens"], row["lemmas"], row["pos"], row["concepts"], phrase)
 
-    return phrase, lemmas, pos, new_concepts, [],\
-           get_combined_representation(phrase, lemmas, pos, new_concepts)
+def one_hot_encoding_ner(ner):
+
+    total_enc = []
+    for e in ner:
+        enc = [0 for i in range(0, len(nerdict))]
+        if e.startswith("_"):
+            try:
+                index = tagdict.index(e)
+            except:
+                index = -1
+
+            if index != -1:
+                enc[index] = 1
+
+        total_enc.append(enc)
+    return total_enc
+
 
 def one_hot_encoding_pos(pos):
     """
