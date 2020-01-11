@@ -5,6 +5,68 @@ from nltk.corpus import wordnet
 from nltk.tokenize import word_tokenize
 import spacy
 
+# https://courses.washington.edu/hypertxt/csar-v02/penntable.html
+tagdict = [
+"CC",
+"CD",
+"DT",
+"EX",
+"FW",
+"IN",
+"IN/that",
+"JJ",
+"JJR",
+"JJS",
+"LS",
+"MD",
+"NN",
+"NNS",
+"NP",
+"NPS",
+"PDT",
+"POS",
+"PP",
+"PP$",
+"RB",
+"RBR",
+"RBS",
+"RP",
+"SENT",
+"SYM",
+"TO",
+"UH",
+"VB",
+"VBD",
+"VBG",
+"VBN",
+"VBZ",
+"VBP",
+"VD",
+"VDD",
+"VDG",
+"VDN",
+"VDZ",
+"VDP",
+"VH",
+"VHD",
+"VHG",
+"VHN",
+"VHZ",
+"VHP",
+"VV",
+"VVD",
+"VVG",
+"VVN",
+"VVP",
+"VVZ",
+"WDT",
+"WP",
+"WP$",
+"WRB",
+":",
+"$"]
+print(len(tagdict))
+
 nlp = spacy.load("en_core_web_sm")
 lemmatizer = WordNetLemmatizer()
 stemmer = PorterStemmer()
@@ -129,3 +191,27 @@ def ner_tool(row, method="none", replace_O="keep", add_ner_feature=False):
 
     return phrase, lemmas, pos, new_concepts, [],\
            get_combined_representation(phrase, lemmas, pos, new_concepts)
+
+def one_hot_encoding_pos(pos):
+    """
+    Generate an one-hot-encoding representation for the Part Of Speech values.
+    :param pos: list with all the POS tags
+    :return: a list with the one-hot vector conversion.
+    """
+
+    total_enc = []
+    for ptag in pos:
+        enc = [0 for i in range(len(tagdict))]
+
+        # If we cannot find the tag then we use an
+        # empty vector
+        try:
+            index = tagdict.index(ptag)
+        except:
+            index = -1
+
+        if index != -1:
+            enc[index] = 1
+
+        total_enc.append(enc)
+    return total_enc

@@ -2,7 +2,7 @@ import argparse
 import pickle
 import pandas as pd
 
-from data_analysis_utils import ner_tool
+from data_analysis_utils import ner_tool, one_hot_encoding_pos
 
 if __name__ == "__main__":
 
@@ -19,7 +19,6 @@ if __name__ == "__main__":
                         default="keep")
     parser.add_argument("--kfold", type=int, help="If it is greater than 0, then we generate files for k-fold validation.",
                         default=0)
-    parser.add_argument("--add-ner-feature", default=False, action="store_true")
     parser.add_argument("--save", default="False", action="store_true", help="Save the dataset to file.")
 
     # Parse the argument
@@ -32,33 +31,32 @@ if __name__ == "__main__":
     with (open(args.test_pickle, "rb")) as openfile:
         test = pickle.load(openfile)
 
-    # Iterate over the files and update accordingly
+    # Iterate over the train file
     train_result = []
     for index, row in train.iterrows():
         phrase, lemmas, pos, concepts, ner, combined, = ner_tool(row, method=args.ner,
                                                            replace_O=args.replace,
                                                            add_ner_feature=args.add_ner_feature)
-        if args.add_ner_feature:
-            train_result.append([phrase, lemmas, pos, concepts, ner, combined])
-        else:
-            train_result.append([phrase, lemmas, pos, concepts, combined])
+        pos_enc = one_hot_encoding_pos(pos)
 
+
+        train_result.append([phrase, lemmas, pos, pos_enc, concepts, ner, combined])
+
+
+    # Iterate over the test file
     test_result = []
     for index, row in test.iterrows():
         phrase, lemmas, pos, concepts, ner, combined, = ner_tool(row, method=args.ner,
                                                                  replace_O=args.replace,
                                                                  add_ner_feature=args.add_ner_feature)
-        if args.add_ner_feature:
-            test_result.append([phrase, lemmas, pos, concepts, ner, combined])
-        else:
-            test_result.append([phrase, lemmas, pos, concepts, combined])
+        pos_enc = one_hot_encoding_pos(pos)
 
-    if args.add_ner_feature:
-        train_updated = pd.DataFrame(train_result, columns=["tokens", "lemmas", "pos", "concepts", "ner", "combined"])
-        test_updated = pd.DataFrame(test_result, columns=["tokens", "lemmas", "pos", "concepts", "ner", "combined"])
-    else:
-        train_updated = pd.DataFrame(train_result, columns=["tokens", "lemmas", "pos", "concepts", "combined"])
-        test_updated = pd.DataFrame(test_result, columns=["tokens", "lemmas", "pos", "concepts", "combined"])
+        test_result.append([phrase, lemmas, pos, pos_enc, concepts, ner, combined])
+
+
+    train_updated = pd.DataFrame(train_result, columns=["tokens", "lemmas", "pos", "pos_enc", "concepts", "ner", "combined"])
+    test_updated = pd.DataFrame(test_result, columns=["tokens", "lemmas", "pos", "pos_enc", "concepts", "ner", "combined"])
+
 
     if args.save:
         train_updated.to_pickle(args.output_train)
