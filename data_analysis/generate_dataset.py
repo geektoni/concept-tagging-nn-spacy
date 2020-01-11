@@ -55,7 +55,7 @@ if __name__ == "__main__":
     # Iterate over the test file
     test_result = []
     print("[*] Converting testing dataset.")
-    with tqdm(total=len(train)) as progress_bar:
+    with tqdm(total=len(test)) as progress_bar:
         for index, row in test.iterrows():
             phrase, lemmas, pos, concepts, ner, combined, = ner_tool(row, method=args.ner,
                                                                  replace_O=args.replace)
