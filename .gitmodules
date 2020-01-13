@@ -1,0 +1,3 @@
+[submodule "concept-tagging-with-neural-networks"]
+	path = concept-tagging-with-neural-networks
+	url = https://github.com/geektoni/concept-tagging-with-neural-networks
