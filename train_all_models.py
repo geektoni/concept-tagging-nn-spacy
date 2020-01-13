@@ -29,7 +29,7 @@ for c in configs:
                     embedder=e[0]
 
                 # Generate the command
-                command = "bash train_models.sh {} {} {} {} {} {} {} {} {} {} {} {} {}".format(
+                command = "bash submit_jobs.sh {} {} {} {} {} {} {} {} {} {} {} {} {}".format(
                     c[0], c[1], c[2], c[3], c[4], c[5], c[6], embedder, f, e[1], e[2], e[3], file_name
                 )
 
