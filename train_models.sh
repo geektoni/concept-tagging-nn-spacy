@@ -10,7 +10,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-result_dir="results/$result_name"
+result_dir="./results/$result_name"
 mkdir -p ${result_dir}
 
 cd ./concept-tagging-with-neural-networks/src
@@ -22,7 +22,7 @@ if [ ${more_features} == "--more-features" ]; then
       --w2v ${embedding_files} \
       --model ${model_type} \
       --epochs ${epochs} \
-      --write_results=$result_dir/${result_file_name}.res \
+      --write_results=$result_dir/${result_file_name} \
       --bidirectional \
       --more-features \
       --embedder ${embedder} \
@@ -40,7 +40,7 @@ else
       --w2v ${embedding_files} \
       --model ${model_type} \
       --epochs ${epochs} \
-      --write_results=$result_dir/${result_file_name}.res \
+      --write_results=$result_dir/${result_file_name} \
       --bidirectional \
       --embedder ${embedder} \
       --batch ${batch_size} \
