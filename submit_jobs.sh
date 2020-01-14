@@ -15,10 +15,17 @@ export embedding_files=${12}
 export result_file_name=${13}
 export seed=${14}
 export max_iters=${15}
+export char_emb=${16}
+export char_emb_file=${17}
 
 export mf=False
 if [ ${more_features} == "--more-features" ]; then
   export mf=True
+fi
+
+export cemb=False
+if [ ${char_emb} == "--c2v" ]; then
+  export cemb=True
 fi
 
 embedder_rep=$embedder
@@ -33,6 +40,6 @@ if [ ${embedder} == "glove_lg" ]; then
   embedder_rep="glove_lg"
 fi
 
-export result_name=${model_type}-${hidden}-${epochs}-${batch_size}-${lr}-${drop_rate}-${emb_norm}-${embedder_rep}-${mf}-${seed}
+export result_name=${model_type}-${hidden}-${epochs}-${batch_size}-${lr}-${drop_rate}-${emb_norm}-${embedder_rep}-${mf}-${cemb}-${seed}
 
 qsub -V -N "$result_name" -q common_cpuQ train_models.sh

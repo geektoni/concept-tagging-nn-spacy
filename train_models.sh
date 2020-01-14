@@ -19,7 +19,8 @@ cd ./concept-tagging-with-neural-networks/src
 
 for i in $(eval echo "{1..${max_iters}}")
 do
-  if [ ${more_features} == "--more-features" ]; then
+  if [ ${char_emb} == "--c2v" ]; then
+    if [ ${more_features} == "--more-features" ]; then
     python run_model.py \
       --train ${train_file} \
       --test ${test_file} \
@@ -36,7 +37,8 @@ do
       --embedding_norm ${emb_norm} \
       --drop ${drop_rate} \
       --unfreeze \
-      --seed ${seed}
+      --seed ${seed} \
+      --c2v ${char_emb_file}
   else
     python run_model.py \
       --train ${train_file} \
@@ -53,6 +55,45 @@ do
       --embedding_norm ${emb_norm} \
       --drop ${drop_rate} \
       --unfreeze \
-      --seed ${seed}
+      --seed ${seed} \
+      --c2v ${char_emb_file}
+  fi
+  else
+    if [ ${more_features} == "--more-features" ]; then
+      python run_model.py \
+        --train ${train_file} \
+        --test ${test_file} \
+        --w2v ${embedding_files} \
+        --model ${model_type} \
+        --epochs ${epochs} \
+        --write_results=../../$result_dir/${result_file_name}_${i}.txt \
+        --bidirectional \
+        --more-features \
+        --embedder ${embedder} \
+        --batch ${batch_size} \
+        --lr ${lr} \
+        --hidden_size ${hidden} \
+        --embedding_norm ${emb_norm} \
+        --drop ${drop_rate} \
+        --unfreeze \
+        --seed ${seed}
+    else
+      python run_model.py \
+        --train ${train_file} \
+        --test ${test_file} \
+        --w2v ${embedding_files} \
+        --model ${model_type} \
+        --epochs ${epochs} \
+        --write_results=../../$result_dir/${result_file_name}_${i}.txt \
+        --bidirectional \
+        --embedder ${embedder} \
+        --batch ${batch_size} \
+        --lr ${lr} \
+        --hidden_size ${hidden} \
+        --embedding_norm ${emb_norm} \
+        --drop ${drop_rate} \
+        --unfreeze \
+        --seed ${seed}
+    fi
   fi
 done
