@@ -17,7 +17,7 @@ mkdir -p ${result_dir}
 
 cd ./concept-tagging-with-neural-networks/src
 
-for ((i=1;i<=max_iters;i++));
+for i in $(seq 1 $max_iters)
 do
   if [ ${char_emb} == "--c2v" ]; then
     if [ ${more_features} == "--more-features" ]; then
