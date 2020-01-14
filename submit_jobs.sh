@@ -14,6 +14,11 @@ export test_file=${11}
 export embedding_files=${12}
 export result_file_name=${13}
 
+export mf=False
+if [ ${more_features} == "--more-features" ]; then
+  export mf=True
+fi
+
 export result_name=${model_type}-${hidden}-${epochs}-${batch_size}-${lr}-${drop_rate}-${emb_norm}-${embedder}-${mf}
 
 qsub -V -N "$result_name" -q common_cpuQ train_models.sh

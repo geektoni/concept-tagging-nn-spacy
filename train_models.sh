@@ -10,11 +10,6 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-mf=False
-if [ ${more_features} == "--more-features" ]; then
-  mf=True
-fi
-
 result_dir="results/$result_name"
 mkdir -p ${result_dir}
 
@@ -28,7 +23,6 @@ if [ ${more_features} == "--more-features" ]; then
       --model ${model_type} \
       --epochs ${epochs} \
       --write_results=$result_dir/${result_file_name}.res \
-      --dev \
       --bidirectional \
       --more-features \
       --embedder ${embedder} \
@@ -46,7 +40,6 @@ else
       --model ${model_type} \
       --epochs ${epochs} \
       --write_results=$result_dir/${result_file_name}.res \
-      --dev \
       --bidirectional \
       --embedder ${embedder} \
       --batch ${batch_size} \
