@@ -30,8 +30,9 @@ if [ ${more_features} == "--more-features" ]; then
       --lr ${lr} \
       --hidden_size ${hidden} \
       --embedding_norm ${emb_norm} \
-      --drop ${drop_rate}
-      --unfreeze
+      --drop ${drop_rate} \
+      --unfreeze \
+      --seed ${seed}
 else
   python run_model.py \
       --train ${train_file} \
@@ -46,6 +47,7 @@ else
       --lr ${lr} \
       --hidden_size ${hidden} \
       --embedding_norm ${emb_norm} \
-      --drop ${drop_rate}
-      --unfreeze
+      --drop ${drop_rate} \
+      --unfreeze \
+      --seed ${seed}
 fi
