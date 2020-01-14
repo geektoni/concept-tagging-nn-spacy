@@ -8,7 +8,7 @@ random.seed(42)
 max_proc = 2
 
 emb = [
-    ("none", "../../data/train_update.pickle", "../../data/test_update.pickle", "../data/movies/w2v_trimmed.pickle"),
+    ("none", "../../data/train_updated.pickle", "../../data/test_updated.pickle", "../data/movies/w2v_trimmed.pickle"),
     ("elmo", "../../data/train_elmo.pickle", "../../data/test_elmo.pickle", "../data/movies/w2v_trimmed.pickle"),
     ("bert", "../../data/train_bert.pickle", "../../data/test_bert.pickle", "../data/movies/w2v_trimmed.pickle"),
     #("glove", "../../data/train_updated.pickle", "../../data/test_updated.pickle", "../../data/embeddings/glove.6B.100d.txt.updated.pickle"),

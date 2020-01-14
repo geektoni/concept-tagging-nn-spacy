@@ -15,7 +15,7 @@ mkdir -p ${result_dir}
 
 cd ./concept-tagging-with-neural-networks/src
 
-for i in {1..${max_iters}};
+for i in $(eval echo "{1..${max_iters}}")
 do
   if [ ${more_features} == "--more-features" ]; then
     python run_model.py \
