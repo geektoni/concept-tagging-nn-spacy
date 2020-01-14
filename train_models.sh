@@ -10,6 +10,8 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+cd concept-tagging-nn-spacy
+
 result_dir="./results/$result_name"
 mkdir -p ${result_dir}
 
@@ -24,7 +26,7 @@ do
       --w2v ${embedding_files} \
       --model ${model_type} \
       --epochs ${epochs} \
-      --write_results=$result_dir/${result_file_name}_${i}.txt \
+      --write_results=../../$result_dir/${result_file_name}_${i}.txt \
       --bidirectional \
       --more-features \
       --embedder ${embedder} \
@@ -42,7 +44,7 @@ do
       --w2v ${embedding_files} \
       --model ${model_type} \
       --epochs ${epochs} \
-      --write_results=$result_dir/${result_file_name}_${i}.txt \
+      --write_results=../../$result_dir/${result_file_name}_${i}.txt \
       --bidirectional \
       --embedder ${embedder} \
       --batch ${batch_size} \

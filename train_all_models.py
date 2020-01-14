@@ -27,7 +27,7 @@ for c in configs:
 
             # Generate the command
             command = "bash submit_jobs.sh {} {} {} {} {} {} {} {} {} {} {} {} {} {}".format(
-                c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], f, e[1], e[2], e[3], file_name,
+                c[0], c[1], c[2], c[3], c[4], c[5], c[6], e[0], f, e[1], e[2], e[3], file_name,
                 random.randint(0, 100000), max_proc
             )
 
