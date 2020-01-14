@@ -15,14 +15,16 @@ mkdir -p ${result_dir}
 
 cd ./concept-tagging-with-neural-networks/src
 
-if [ ${more_features} == "--more-features" ]; then
-  python run_model.py \
+for i in {1..${max_iters}};
+do
+  if [ ${more_features} == "--more-features" ]; then
+    python run_model.py \
       --train ${train_file} \
       --test ${test_file} \
       --w2v ${embedding_files} \
       --model ${model_type} \
       --epochs ${epochs} \
-      --write_results=$result_dir/${result_file_name} \
+      --write_results=$result_dir/${result_file_name}_${i}.txt \
       --bidirectional \
       --more-features \
       --embedder ${embedder} \
@@ -33,14 +35,14 @@ if [ ${more_features} == "--more-features" ]; then
       --drop ${drop_rate} \
       --unfreeze \
       --seed ${seed}
-else
-  python run_model.py \
+  else
+    python run_model.py \
       --train ${train_file} \
       --test ${test_file} \
       --w2v ${embedding_files} \
       --model ${model_type} \
       --epochs ${epochs} \
-      --write_results=$result_dir/${result_file_name} \
+      --write_results=$result_dir/${result_file_name}_${i}.txt \
       --bidirectional \
       --embedder ${embedder} \
       --batch ${batch_size} \
@@ -50,4 +52,5 @@ else
       --drop ${drop_rate} \
       --unfreeze \
       --seed ${seed}
-fi
+  fi
+done
