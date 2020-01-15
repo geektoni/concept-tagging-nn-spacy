@@ -19,6 +19,7 @@ cd ./concept-tagging-with-neural-networks/src
 
 for i in $(seq 1 $max_iters)
 do
+  seed_used=$((seed+i))
   if [ ${char_emb} == "--c2v" ]; then
     if [ ${more_features} == "--more-features" ]; then
     python run_model.py \
@@ -37,7 +38,7 @@ do
       --embedding_norm ${emb_norm} \
       --drop ${drop_rate} \
       --unfreeze \
-      --seed ${seed} \
+      --seed ${seed_used} \
       --c2v ${char_emb_file}
   else
     python run_model.py \
@@ -55,7 +56,7 @@ do
       --embedding_norm ${emb_norm} \
       --drop ${drop_rate} \
       --unfreeze \
-      --seed ${seed} \
+      --seed ${seed_used} \
       --c2v ${char_emb_file}
   fi
   else
@@ -76,7 +77,7 @@ do
         --embedding_norm ${emb_norm} \
         --drop ${drop_rate} \
         --unfreeze \
-        --seed ${seed}
+        --seed ${seed_used}
     else
       python run_model.py \
         --train ${train_file} \
@@ -93,7 +94,7 @@ do
         --embedding_norm ${emb_norm} \
         --drop ${drop_rate} \
         --unfreeze \
-        --seed ${seed}
+        --seed ${seed_used}
     fi
   fi
 done

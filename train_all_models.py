@@ -36,10 +36,21 @@ for c in configs:
 
                 file_name = "result"
 
+                # Double the iterations if we are using a different embedding
+                iterations=c[2]
+                if e == "bert" or e == "elmo":
+                    iterations=c[2]*2
+
+                # If we are using chars, then we double the size of the hidden layer
+                # in the case of the lstm
+                hidden_size=c[1]
+                if charemb != "none" and c[0] == "lstm":
+                    hidden_size = c[1]*2
+
                 # Generate the command
                 command = "bash submit_jobs.sh {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {} {}".format(
-                    c[0], c[1], c[2], c[3], c[4], c[5], c[6], e[0], f, e[1], e[2], e[3], file_name,
-                    random.randint(0, 100000), max_proc, charemb, e[4]
+                    c[0], hidden_size, iterations, c[3], c[4], c[5], c[6], e[0], f, e[1], e[2], e[3], file_name,
+                    random.randint(0, 1000000), max_proc, charemb, e[4]
                 )
 
                 print(command)
