@@ -16,21 +16,26 @@ if __name__ == "__main__":
                         default="./train_updated.pickle")
     parser.add_argument("--output-test", type=str, help="Output path of the update train dataset.",
                         default="./test_updated.pickle")
-    parser.add_argument("--ner", type=str, help="Specify the NER tool to be used (none, spacy, custom-spacy)",
+    parser.add_argument("--ner", type=str, help="Specify the NER tool to be used (spacy, custom-spacy)",
                         default="spacy")
     parser.add_argument("--replace", type=str, help="Replace the O tag with a more informative value (keep, stem, lemma, word)",
                         default="keep")
     parser.add_argument("--kfold", type=int, help="If it is greater than 0, then we generate files for k-fold validation.",
                         default=0)
-    parser.add_argument("--embedder", type=str, help="Type of embedder we want to use", default="bert")
+    parser.add_argument("--embedder", type=str, help="Type of embedder we want to use", default="none")
     parser.add_argument("--save", default="False", action="store_true", help="Save the dataset to file.")
     parser.add_argument("--verbose", default="False", action="store_true", help="Print more information")
 
     # Parse the argument
     args = parser.parse_args()
 
-    # set up the embedder
-    embedder = BertEmbedderTransformer() if args.embedder=="bert" else ElmoEmbedderTransformer()
+    # Set up the embedder
+    if args.embedder == "bert":
+        embedder = BertEmbedderTransformer()
+    elif args.embedder == "elmo":
+        embedder = ElmoEmbedderTransformer()
+    else:
+        embedder = None
 
     # Open the pickle files
     with (open(args.train_pickle, "rb")) as openfile:
@@ -48,7 +53,12 @@ if __name__ == "__main__":
                                                                replace_O=args.replace)
             pos_enc = one_hot_encoding_pos(pos)
             ner_enc = one_hot_encoding_ner(ner)
-            tokens_emb = embedder(phrase)
+
+            if embedder is not None:
+                tokens_emb = embedder(phrase)
+            else:
+                tokens_emb = phrase
+
             train_result.append([phrase, tokens_emb, lemmas, pos, pos_enc, concepts, ner_enc, combined])
             progress_bar.update(1)
 
@@ -61,7 +71,12 @@ if __name__ == "__main__":
                                                                  replace_O=args.replace)
             pos_enc = one_hot_encoding_pos(pos)
             ner_enc = one_hot_encoding_ner(ner)
-            tokens_emb = embedder(phrase)
+
+            if embedder is not None:
+                tokens_emb = embedder(phrase)
+            else:
+                tokens_emb = phrase
+
             test_result.append([phrase, tokens_emb, lemmas, pos, pos_enc, concepts, ner_enc, combined])
             progress_bar.update(1)
 

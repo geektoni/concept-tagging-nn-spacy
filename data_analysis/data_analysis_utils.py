@@ -133,7 +133,7 @@ def return_replaced_concepts(tokens, concepts, method="keep"):
         return [tokens[i] if concepts[i] == "O" else concepts[i] for i in range(0, len(tokens))]
 
 
-def ner_tool(row, method="none", replace_O="keep"):
+def ner_tool(row, method="spacy", replace_O="keep"):
     """
     Replace entities detected into the given phrase with
     an entity definition
@@ -144,10 +144,7 @@ def ner_tool(row, method="none", replace_O="keep"):
     :return: 'tokens', 'lemmas', 'pos', 'concepts', 'combined'
     """
 
-    phrase, lemmas, pos, concepts = row["tokens"], row["lemmas"], row["pos"], row["concepts"]
-
-    if method=="none" and replace_O=="keep":
-        return phrase, lemmas, pos, concepts, [], row["combined"]
+    phrase, lemmas, pos, concepts = row["tokens"].copy(), row["lemmas"], row["pos"], row["concepts"]
 
     if method=="spacy":
         doc = nlp(" ".join(phrase))
@@ -167,26 +164,6 @@ def ner_tool(row, method="none", replace_O="keep"):
                 # there are errors? Then we do not include that
                 # phrase in the final dataset
                 break
-    else:
-        sent = ie_preprocess(" ".join(phrase))
-        result = nltk.ne_chunk(sent)
-        result_bin = nltk.ne_chunk(sent, binary=True)
-        for i in range(0, len(result_bin)):
-            if result_bin[i][1] == "NE":
-                phrase[i] = "_{}".format(result[i][1].lower())
-
-    # Remove duplicate occurrences
-    #i = 0
-    #while i < len(phrase) - 1:
-    #    if phrase[i] == phrase[i + 1] and phrase[i].startswith("_"):
-    #        del phrase[i]
-    #        del concepts[i]
-    #        del lemmas[i]
-    #        del pos[i]
-    #    else:
-    #        i = i + 1
-
-    #new_concepts = return_replaced_concepts(phrase, concepts, method=replace_O)
 
     return row["tokens"], row["lemmas"], row["pos"], row["concepts"], phrase, \
             get_combined_representation(row["tokens"], row["lemmas"], row["pos"], row["concepts"], phrase)
