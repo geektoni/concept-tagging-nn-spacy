@@ -5,7 +5,7 @@ import random
 # set random seed
 random.seed(42)
 
-max_proc = 2
+max_proc = 50
 
 emb = [
     ("none", "../../data/train_updated.pickle", "../../data/test_updated.pickle", "../data/movies/w2v_trimmed.pickle",

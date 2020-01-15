@@ -7,8 +7,10 @@
 #PBS -m be
 
 # Strict bash mode
-set -euo pipefail
-IFS=$'\n\t'
+# Disabled since it does not work well
+# on the cluster environment
+#set -euo pipefail
+#IFS=$'\n\t'
 
 cd concept-tagging-nn-spacy
 
