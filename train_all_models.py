@@ -8,15 +8,16 @@ random.seed(42)
 max_proc = 25
 
 emb = [
-    ("none", "../../data/train.bz2", "../../data/test.bz2", "../data/movies/w2v_trimmed.bz2",
+    ("none", "../../data/train.bz2", "../../data/test.bz2", "../data/movies/w2v_trimmed.pickle",
      "../data/movies/c2v_20.pickle"),
-    ("elmo", "../../data/train_elmo.bz2", "../../data/test_elmo.bz2", "../data/movies/w2v_trimmed.bz2",
+    ("elmo", "../../data/train_elmo.bz2", "../../data/test_elmo.bz2", "../data/movies/w2v_trimmed.pickle",
      "../data/movies/c2v_20.pickle"),
-    ("elmo-combined", "../../data/train_elmo.bz2", "../../data/test_elmo.bz2", "../data/movies/w2v_trimmed.bz2",
+    ("elmo-combined", "../../data/train_elmo.bz2", "../../data/test_elmo.bz2", "../data/movies/w2v_trimmed.pickle",
      "../data/movies/c2v_20.pickle"),
-    ("bert", "../../data/train_bert.bz2", "../../data/test_bert.bz2", "../data/movies/w2v_trimmed.bz2",
+    ("bert", "../../data/train_bert.bz2", "../../data/test_bert.bz2", "../data/movies/w2v_trimmed.pickle",
      "../data/movies/c2v_20.pickle"),
-    ("glove", "../../data/train.bz2", "../../data/test.bz2", "../../data/embeddings/glove.6B.100d.txt.updated.bz2"),
+    ("glove", "../../data/train.bz2", "../../data/test.bz2", "../../data/embeddings/glove.6B.100d.txt.updated.bz2",
+     "../data/movies/c2v_20.pickle")
 ]
 
 configs = [
