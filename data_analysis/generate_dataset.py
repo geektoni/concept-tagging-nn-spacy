@@ -23,6 +23,7 @@ if __name__ == "__main__":
     parser.add_argument("--kfold", type=int, help="If it is greater than 0, then we generate files for k-fold validation.",
                         default=0)
     parser.add_argument("--embedder", type=str, help="Type of embedder we want to use", default="none")
+    parser.add_argument("--save-elmo-emb", action="store_true", default=True, help="Save the elmo embeddings separately.")
     parser.add_argument("--save", default="False", action="store_true", help="Save the dataset to file.")
     parser.add_argument("--verbose", default="False", action="store_true", help="Print more information")
 
@@ -33,7 +34,7 @@ if __name__ == "__main__":
     if args.embedder == "bert":
         embedder = BertEmbedderTransformer()
     elif args.embedder == "elmo":
-        embedder = ElmoEmbedderTransformer()
+        embedder = ElmoEmbedderTransformer(args.save_elmo_emb)
     else:
         embedder = None
 
@@ -91,5 +92,5 @@ if __name__ == "__main__":
 
     # Save the result dataframes into a pickle format
     if args.save:
-        train_updated.to_pickle(args.output_train)
-        test_updated.to_pickle(args.output_test)
+        train_updated.to_pickle(args.output_train, compression="bz2")
+        test_updated.to_pickle(args.output_test, compression="bz2")

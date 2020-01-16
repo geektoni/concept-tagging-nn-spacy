@@ -7,6 +7,7 @@ parser.add_argument("filename", metavar='file', nargs=1, type=str, help="Path to
 parser.add_argument("--column", type=str, help="Print exactly this column")
 parser.add_argument("--quick-bert-convert", default=False, action="store_true", help="Quickly convert BERT to correct file")
 parser.add_argument("--save", default=False, action="store_true", help="Save the file to a manageable csv format")
+parser.add_argument("--convert-to-bz2", default=False, action="store_true")
 args = parser.parse_args()
 
 objects = []
@@ -37,6 +38,10 @@ if args.quick_bert_convert:
                 raw_emb.append(e[1][0])
             total_tokens.append(raw_emb)
     objects[0]["tokens_emb"] = np.array(total_tokens)
+
+if args.convert_to_bz2:
+    for o in objects:
+        o.to_pickle("./converted.bz2", compression="bz2")
 
 # Save pickle to csv file(s) to be inspected
 if args.save:

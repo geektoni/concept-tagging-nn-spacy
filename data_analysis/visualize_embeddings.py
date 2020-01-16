@@ -5,6 +5,7 @@ from sklearn.manifold import TSNE
 import random
 
 import numpy as np
+import pandas as pd
 
 from tqdm import tqdm
 
@@ -40,7 +41,7 @@ def convert_with_emb(word, w2v_vocab):
                 vectors.append(vector)
     return np.array(vectors[0])
 
-def tnse_plot(model, emb, random_=False, save=None, legend=True):
+def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
     "Creates and TSNE model and plots it"
     labels = []
     tokens = []
@@ -91,7 +92,6 @@ def tnse_plot(model, emb, random_=False, save=None, legend=True):
                  )
             )
 
-
     x = []
     y = []
     for value in new_values:
@@ -134,19 +134,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Read embedding file
+    print("Read embedding file")
     emb = None
     if args.use_emb:
-        with (open(args.use_emb, "rb")) as openfile:
-            emb = pickle.load(openfile)
+        emb = pd.read_pickle(args.use_emb, compression="infer")
 
     # Read all the needed objects
     objects = []
-    with (open(args.filename[0], "rb")) as openfile:
-        while True:
-            try:
-                objects.append(pickle.load(openfile))
-            except EOFError:
-                break
+    for f in args.filename:
+        objects.append(pd.read_pickle(f, compression="infer"))
 
     # Plot the visualization
     tnse_plot(objects[0], emb, random_=args.random, save=args.save, legend=args.no_legend)
