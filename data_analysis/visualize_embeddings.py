@@ -40,7 +40,7 @@ def convert_with_emb(word, w2v_vocab):
                 vectors.append(vector)
     return np.array(vectors[0])
 
-def tnse_plot(model, emb, random_=False):
+def tnse_plot(model, emb, random_=False, save=None, legend=True):
     "Creates and TSNE model and plots it"
     labels = []
     tokens = []
@@ -98,7 +98,11 @@ def tnse_plot(model, emb, random_=False):
         x.append(value[0])
         y.append(value[1])
 
-    plt.figure(figsize=(16, 16))
+    if legend:
+        plt.figure(figsize=(12, 8))
+    else:
+        plt.figure(figsize=(12, 6))
+
     scatter = plt.scatter(x, y, c=colormap[np.array(labels_value)])
 
     handles = []
@@ -106,9 +110,16 @@ def tnse_plot(model, emb, random_=False):
         pop_a = mpatches.Patch(color=colormap[i], label=labels_plot[i])
         handles.append(pop_a)
 
-    plt.legend(handles=handles, loc="upper right", title="Concepts")
+    if legend:
+        plt.legend(handles=handles, loc="upper center",
+               title="Concepts", bbox_to_anchor=(0., 1.02, 1., .102),
+               ncol=len(labels_plot))
 
-    plt.show()
+    if save is not None:
+        plt.tight_layout()
+        plt.savefig(save, dpi=250)
+    else:
+        plt.show()
 
 if __name__ == "__main__":
 
@@ -116,6 +127,8 @@ if __name__ == "__main__":
     parser.add_argument("filename", metavar='file', nargs=1, type=str, help="Path to the file we want to explore")
     parser.add_argument("--use-emb", type=str, help="Use custom embedding file")
     parser.add_argument("--random", action="store_true", help="Assign label randomly", default=False)
+    parser.add_argument("--save", type=str, help="Save the image to disk")
+    parser.add_argument("--no-legend", action="store_false", help="Plot also the legend", default=True)
 
     # Parse the arguments
     args = parser.parse_args()
@@ -136,4 +149,4 @@ if __name__ == "__main__":
                 break
 
     # Plot the visualization
-    tnse_plot(objects[0], emb, random_=args.random)
+    tnse_plot(objects[0], emb, random_=args.random, save=args.save, legend=args.no_legend)
