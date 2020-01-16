@@ -20,5 +20,5 @@ for f in args.filename:
             objects.append(new_obj)
 
         df = pd.DataFrame(objects, columns=["token", "vector"])
-        df.to_pickle(f+".updated.pickle")
+        df.to_pickle(f+".updated.bz2", compression="bz2")
 
