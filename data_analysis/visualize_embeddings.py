@@ -1,7 +1,8 @@
 import argparse
 import pickle
 from sklearn.manifold import TSNE
-from sklearn.cluster import KMeans
+
+import random
 
 import numpy as np
 
@@ -10,6 +11,11 @@ from tqdm import tqdm
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+
+font = {'size' : 13}
+matplotlib.rc('font', **font)
+
+selected_tokens = ["movie.name", "director.name", "actor.name", "producer.name"]
 
 def get_cmap(n, name='hsv'):
     '''Returns a function that maps each index in 0, 1, ..., n-1 to a distinct
@@ -34,7 +40,7 @@ def convert_with_emb(word, w2v_vocab):
                 vectors.append(vector)
     return np.array(vectors[0])
 
-def tnse_plot(model, emb):
+def tnse_plot(model, emb, random_=False):
     "Creates and TSNE model and plots it"
     labels = []
     tokens = []
@@ -47,13 +53,14 @@ def tnse_plot(model, emb):
                 value = e["concepts"][i].split("-")
                 if value[0] != "O":
                     value = value[1]
-                    if value == "movie.name" or value == "director.name":
+                    if value in selected_tokens:
                         if emb is not None:
                             converted = convert_with_emb(e["tokens"][i], emb)
                             tokens.append(converted)
                         else:
                             tokens.append(e["tokens_emb"][i])
-                        labels.append(e["concepts"][i])
+                        #labels.append(e["concepts"][i])
+                        labels.append(value)
 
             pbar.update(1)
 
@@ -64,14 +71,26 @@ def tnse_plot(model, emb):
         colormap.append(matplotlib.colors.rgb2hex(colormap_base(i)[:3]))
     colormap = np.array(colormap)
 
-    print("Running TNSE")
-    tsne_model = TSNE(perplexity=40, n_components=2, init='pca', n_iter=2500, random_state=23, n_jobs=-1)
-    new_values = tsne_model.fit_transform(tokens)
+    labels_value = []
+    for l in labels:
+        for i in range(0, len(labels_plot)):
+            if l == labels_plot[i]:
+                labels_value.append(i)
+                break
 
-    # Running k_means
-    print("Running KMeans")
-    kmeans = KMeans(n_clusters=len(labels_plot), random_state=0)
-    kmeans.fit(new_values)
+    if not random_:
+        print("Running TNSE")
+        tsne_model = TSNE(perplexity=40, n_components=2, init='pca', n_iter=2500, random_state=23, n_jobs=-1)
+        new_values = tsne_model.fit_transform(tokens)
+    else:
+        new_values = []
+        for t in tokens:
+            new_values.append(
+                (random.randrange(0, len(tokens)),
+                 random.randrange(0, len(tokens))
+                 )
+            )
+
 
     x = []
     y = []
@@ -80,7 +99,7 @@ def tnse_plot(model, emb):
         y.append(value[1])
 
     plt.figure(figsize=(16, 16))
-    scatter = plt.scatter(x, y, c=colormap[np.array(kmeans.labels_)])
+    scatter = plt.scatter(x, y, c=colormap[np.array(labels_value)])
 
     handles = []
     for i in range(0, len(labels_plot)):
@@ -89,15 +108,6 @@ def tnse_plot(model, emb):
 
     plt.legend(handles=handles, loc="upper right", title="Concepts")
 
-    #for i in range(len(x)):
-    #    index = is_in_cluster(kmeans.cluster_centers_, x[i], y[i])
-    #    if index != -1:
-    #        plt.annotate(labels[i],
-    #            xy=(kmeans.cluster_centers_[index][0], kmeans.cluster_centers_[index][1]),
-    #            xytext=(5, 2),
-    #            textcoords='offset points',
-    #            ha='right',
-    #            va='bottom')
     plt.show()
 
 if __name__ == "__main__":
@@ -105,6 +115,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Produce visualizations of the embeddings.')
     parser.add_argument("filename", metavar='file', nargs=1, type=str, help="Path to the file we want to explore")
     parser.add_argument("--use-emb", type=str, help="Use custom embedding file")
+    parser.add_argument("--random", action="store_true", help="Assign label randomly", default=False)
 
     # Parse the arguments
     args = parser.parse_args()
@@ -125,4 +136,4 @@ if __name__ == "__main__":
                 break
 
     # Plot the visualization
-    tnse_plot(objects[0], emb)
+    tnse_plot(objects[0], emb, random_=args.random)
