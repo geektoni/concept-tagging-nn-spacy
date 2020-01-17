@@ -1,5 +1,5 @@
 import argparse
-import pickle
+import torch
 from sklearn.manifold import TSNE
 
 import random
@@ -41,6 +41,9 @@ def convert_with_emb(word, w2v_vocab):
                 vectors.append(vector)
     return np.array(vectors[0])
 
+def convert_elmo_concepts_emb(x, W):
+    return torch.sum(x * W[:, None, None], axis=0).numpy()
+
 def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
     "Creates and TSNE model and plots it"
     labels = []
@@ -59,8 +62,14 @@ def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
                             converted = convert_with_emb(e["tokens"][i], emb)
                             tokens.append(converted)
                         else:
-                            tokens.append(e["tokens_emb"][i])
-                        #labels.append(e["concepts"][i])
+                            if elmo:
+                                w = torch.tensor([1/3, 1/3, 1/3])
+                                x = torch.FloatTensor(e["tokens_emb"])
+                                tokens.append(
+                                    convert_elmo_concepts_emb(x, w)[i]
+                                )
+                            else:
+                                tokens.append(e["tokens_emb"][i])
                         labels.append(value)
 
             pbar.update(1)
@@ -129,20 +138,22 @@ if __name__ == "__main__":
     parser.add_argument("--random", action="store_true", help="Assign label randomly", default=False)
     parser.add_argument("--save", type=str, help="Save the image to disk")
     parser.add_argument("--no-legend", action="store_false", help="Plot also the legend", default=True)
+    parser.add_argument("--elmo", action="store_true", help="Assign label randomly", default=False)
 
     # Parse the arguments
     args = parser.parse_args()
 
     # Read embedding file
-    print("Read embedding file")
     emb = None
     if args.use_emb:
+        print("Read embedding file")
         emb = pd.read_pickle(args.use_emb, compression="infer")
 
     # Read all the needed objects
     objects = []
+    print("Read files")
     for f in args.filename:
         objects.append(pd.read_pickle(f, compression="infer"))
 
     # Plot the visualization
-    tnse_plot(objects[0], emb, random_=args.random, save=args.save, legend=args.no_legend)
+    tnse_plot(objects[0], emb, random_=args.random, save=args.save, legend=args.no_legend, elmo=args.elmo)
