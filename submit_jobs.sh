@@ -35,9 +35,9 @@ if [ ${embedder} == "glove" ]; then
   embedder_rep="glove"
 fi
 
-if [ ${embedder} == "glove_lg" ]; then
+if [ ${embedder} == "conceptnet" ]; then
   export embedder="none"
-  embedder_rep="glove_lg"
+  embedder_rep="conceptnet"
 fi
 
 export result_name=${model_type}-${hidden}-${epochs}-${batch_size}-${lr}-${drop_rate}-${emb_norm}-${embedder_rep}-${mf}-${cemb}-${seed}

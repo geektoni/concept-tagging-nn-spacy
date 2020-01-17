@@ -17,6 +17,8 @@ emb = [
     ("bert", "../../data/train_bert.bz2", "../../data/test_bert.bz2", "../data/movies/w2v_trimmed.pickle",
      "../data/movies/c2v_20.pickle"),
     ("glove", "../../data/train.bz2", "../../data/test.bz2", "../../data/embeddings/glove.6B.100d.txt.updated.bz2",
+     "../data/movies/c2v_20.pickle"),
+    ("conceptnet", "../../data/train.bz2", "../../data/test.bz2", "../../data/embeddings/conceptnet-300.bz2",
      "../data/movies/c2v_20.pickle")
 ]
 
@@ -37,9 +39,10 @@ for c in configs:
                 file_name = "result"
 
                 # Double the iterations if we are using a different embedding
-                #iterations=c[2]
-                #if e == "bert" or e == "elmo" or e == "elmo-combined":
-                #    iterations=c[2]*2
+                # in particular bert
+                iterations=c[2]
+                if e == "bert" or e == "elmo" or e == "elmo-combined":
+                    iterations=c[2]*2
 
                 # If we are using chars, then we double the size of the hidden layer
                 # in the case of the lstm
