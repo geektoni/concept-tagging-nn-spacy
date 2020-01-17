@@ -13,6 +13,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
+import seaborn as sns
+sns.set(font_scale=1.3)
+
 font = {'size' : 13}
 matplotlib.rc('font', **font)
 
@@ -82,10 +85,12 @@ def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
     colormap = np.array(colormap)
 
     labels_value = []
+    labels_plot_colors = []
     for l in labels:
         for i in range(0, len(labels_plot)):
             if l == labels_plot[i]:
                 labels_value.append(i)
+                labels_plot_colors.append(labels_plot[i])
                 break
 
     if not random_:
@@ -108,11 +113,14 @@ def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
         y.append(value[1])
 
     if legend:
-        plt.figure(figsize=(12, 8))
+        fig, ax = plt.subplots(figsize=(12, 8))
     else:
-        plt.figure(figsize=(12, 6))
+        fig, ax = plt.subplots(figsize=(12, 6))
 
-    scatter = plt.scatter(x, y, c=colormap[np.array(labels_value)])
+    data = pd.DataFrame(list(zip(x, y, labels_plot_colors)), columns=["x", "y", "Concept"])
+    sns.set_palette(sns.color_palette("muted", len(labels_plot)))
+    scatter = sns.scatterplot(data=data, x="x", y="y", hue="Concept", s=50)
+    #c=colormap[np.array(labels_value)])
 
     handles = []
     for i in range(0, len(labels_plot)):
@@ -120,9 +128,11 @@ def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
         handles.append(pop_a)
 
     if legend:
-        plt.legend(handles=handles, loc="upper center",
-               title="Concepts", bbox_to_anchor=(0., 1.02, 1., .102),
-               ncol=len(labels_plot))
+        handles, labels = ax.get_legend_handles_labels()
+        plt.legend( handles=handles[1:], labels=labels[1:],
+                    loc="upper center",
+                    bbox_to_anchor=(0., 1.02, 1., .102),
+                    ncol=len(labels_plot))
 
     if save is not None:
         plt.tight_layout()
