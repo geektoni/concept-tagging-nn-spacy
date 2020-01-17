@@ -1,5 +1,6 @@
 import argparse
 import pandas as pd
+import numpy as np
 from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description='Convert the ConceptNet embeddings into the correct format')
@@ -25,11 +26,12 @@ for f in args.filename:
 
                 l = l.decode("utf-8").replace("\n", "")
                 l = l.split(" ")
-                emb = [float(l[i]) for i in range(1, len(l))]
+                emb = np.array([float(l[i]) for i in range(1, len(l))], dtype=np.float32)
                 new_obj = [l[0], emb]
                 objects.append(new_obj)
                 pbar.update(1)
 
         df = pd.DataFrame(objects, columns=["token", "vector"])
-        df.to_pickle(f+".updated.pickle", compression="bz2")
+        df.info()
+        df.to_pickle("conceptnet-300.bz2", compression="bz2")
 
