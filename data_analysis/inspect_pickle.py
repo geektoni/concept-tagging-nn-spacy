@@ -43,10 +43,10 @@ total_tagged_ner = 0
 total_ner = []
 for o in objects:
     for index, row in o.iterrows():
-        for emb in row["pos_enc"]:
+        for emb in row["ner_enc"]:
             total_tagged_ner += sum(emb)
-            #total_ner.append("-".join([str(x) for x in emb]))
-#print(set(total_ner))
+            total_ner.append("-".join([str(x) for x in emb]))
+print(len(set(total_ner)))
 print(total_tagged_ner)
 
 if args.quick_bert_convert:
