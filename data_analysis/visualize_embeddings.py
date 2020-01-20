@@ -113,14 +113,13 @@ def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
         y.append(value[1])
 
     if legend:
-        fig, ax = plt.subplots(figsize=(12, 8))
+        fig, ax = plt.subplots(figsize=(12, 6))
     else:
         fig, ax = plt.subplots(figsize=(12, 6))
 
     data = pd.DataFrame(list(zip(x, y, labels_plot_colors)), columns=["x", "y", "Concept"])
     sns.set_palette(sns.color_palette("muted", len(labels_plot)))
     scatter = sns.scatterplot(data=data, x="x", y="y", hue="Concept", s=50)
-    #c=colormap[np.array(labels_value)])
 
     handles = []
     for i in range(0, len(labels_plot)):
@@ -133,6 +132,8 @@ def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
                     loc="upper center",
                     bbox_to_anchor=(0., 1.02, 1., .102),
                     ncol=len(labels_plot))
+    else:
+        ax.legend_.remove()
 
     if save is not None:
         plt.tight_layout()

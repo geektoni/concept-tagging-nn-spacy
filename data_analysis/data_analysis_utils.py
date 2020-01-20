@@ -175,7 +175,7 @@ def one_hot_encoding_ner(ner):
         enc = [0 for i in range(0, len(nerdict))]
         if e.startswith("_"):
             try:
-                index = tagdict.index(e)
+                index = nerdict.index(e.replace("_", "").upper())
             except:
                 index = -1
 
