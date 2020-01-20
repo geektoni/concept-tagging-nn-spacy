@@ -149,6 +149,55 @@ We evaluated also the various embeddings presented before. For the ConceptNet we
 
 \section{Experiments}
 
+\begin{table*}[th!]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lllllllll@{}}
+Model & hidden & epochs & batch & lr & drop rate & emb norm & emb & min F1 / mean F1 / best F1 \\ \hline 
+lstm & 200 & 15 & 20 & 0.001& 0.7& 6& none &\begin{tabular}[c]{@{}lll@{}}81.88 & 83.17 & 84.35 \\ 
+82.29 & 83.27 & 84.13 \\ 
+82.85 & 83.50 & 84.37 \\ 
+\end{tabular} \\ \hline 
+lstm & 200 & 15 & 20 & 0.001& 0.7& 6& conceptnet &\begin{tabular}[c]{@{}lll@{}}81.58 & 82.49 & 83.75 \\ 
+81.16 & 82.48 & 83.51 \\ 
+82.44 & 83.03 & 83.63 \\ 
+\end{tabular} \\ \hline 
+lstm & 200 & 30 & 20 & 0.001& 0.7& 6& bert &\begin{tabular}[c]{@{}lll@{}}77.06 & 79.10 & 81.39 \\ 
+77.53 & 79.08 & 79.86 \\ 
+80.80 & 82.29 & 83.30 \\ 
+\end{tabular} \\ \hline 
+lstm & 200 & 30 & 20 & 0.001& 0.7& 6& elmo &\begin{tabular}[c]{@{}lll@{}}81.77 & 82.65 & 83.48 \\ 
+81.34 & 82.59 & 83.89 \\ 
+83.14 & 84.29 & 85.56 \\ 
+\end{tabular} \\ \hline 
+lstm & 200 & 30 & 20 & 0.001& 0.7& 6& elmo (comb) &\begin{tabular}[c]{@{}lll@{}}75.19 & 82.29 & 85.14 \\ 
+79.51 & 82.60 & 85.23 \\ 
+83.17 & 84.71 & 85.78 \\ 
+\end{tabular} \\ \hline 
+lstmcrf & 200 & 10 & 1 & 0.001& 0.7& 6& none &\begin{tabular}[c]{@{}lll@{}}84.85 & 85.70 & 86.83 \\ 
+84.51 & 85.68 & 86.70 \\ 
+84.53 & 85.53 & 86.49 \\ 
+\end{tabular} \\ \hline 
+lstmcrf & 200 & 10 & 1 & 0.001& 0.7& 6& conceptnet &\begin{tabular}[c]{@{}lll@{}}85.46 & 85.99 & 86.52 \\ 
+83.86 & 84.66 & 85.28 \\ 
+85.37 & 85.37 & 85.37 \\ 
+\end{tabular} \\ \hline 
+lstmcrf & 200 & 20 & 1 & 0.001& 0.7& 6& bert &\begin{tabular}[c]{@{}lll@{}}82.33 & 83.73 & 84.95 \\ 
+82.34 & 83.61 & 84.60 \\ 
+82.01 & 83.61 & 85.67 \\ 
+\end{tabular} \\ \hline 
+lstmcrf & 200 & 20 & 1 & 0.001& 0.7& 6& elmo &\begin{tabular}[c]{@{}lll@{}}84.50 & 85.53 & 86.39 \\ 
+84.11 & 85.69 & 86.59 \\ 
+84.37 & 85.40 & 86.88 \\ 
+\end{tabular} \\ \hline 
+lstmcrf & 200 & 10 & 1 & 0.001& 0.7& 6& elmo (comb) &\begin{tabular}[c]{@{}lll@{}}84.34 & 85.72 & 86.56 \\ 
+79.77 & 85.66 & 87.18 \\ 
+84.80 & 85.75 & 86.84 \\ 
+\end{tabular} \\ \hline 
+\end{tabular}}
+\caption{Evaluation results of the various models. Each model is bidirectional. The performance were obtained by recording the results for 25 runs by varying the inizialization of the models and by keeping their hyperparameters fixed. The first line show the results without any improvements. The second line shows the results by adding the NER and POS tagging features. The third line shows the results by adding the character convolution and the NER and POS tagging features.}
+\label{tab:my-table}
+\end{table*}
 
 
 \section{Results}
