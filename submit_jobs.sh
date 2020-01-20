@@ -40,6 +40,11 @@ if [ ${embedder} == "conceptnet" ]; then
   embedder_rep="conceptnet"
 fi
 
+if [ ${embedder} == "elmo-combined" ]; then
+  export embedder="elmo-combined"
+  embedder_rep="elmo_combined"
+fi
+
 export result_name=${model_type}-${hidden}-${epochs}-${batch_size}-${lr}-${drop_rate}-${emb_norm}-${embedder_rep}-${mf}-${cemb}-${seed}
 
 qsub -V -N "$result_name" -q common_cpuQ train_models.sh
