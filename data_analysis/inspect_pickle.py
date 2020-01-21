@@ -3,12 +3,28 @@ import pickle
 import numpy as np
 import pandas as pd
 
+
+def _to_w2v_indexes(sentence, w2v_vocab):
+    total_missing = []
+    for word in sentence:
+        if word in w2v_vocab:
+            pass
+        elif word.title() in w2v_vocab:
+            pass
+        elif word.isdigit() or word.find("DIGIT") != -1:
+            pass
+        else:
+            total_missing.append(word)
+    return total_missing
+
+
 parser = argparse.ArgumentParser(description='Inspect pickle files used for training/testing')
 parser.add_argument("filename", metavar='file', nargs=1, type=str, help="Path to the file we want to explore")
 parser.add_argument("--column", type=str, help="Print exactly this column")
 parser.add_argument("--quick-bert-convert", default=False, action="store_true", help="Quickly convert BERT to correct file")
 parser.add_argument("--save", default=False, action="store_true", help="Save the file to a manageable csv format")
 parser.add_argument("--convert-to-bz2", default=False, action="store_true")
+parser.add_argument("--read-emb", default="../embedding.pickle")
 parser.add_argument("--copy-ner-from", type=str, default="./train_updated.pickle")
 parser.add_argument("--copy-ner-to", type=str)
 args = parser.parse_args()
@@ -48,6 +64,19 @@ for o in objects:
             total_ner.append("-".join([str(x) for x in emb]))
 print(len(set(total_ner)))
 print(total_tagged_ner)
+
+# Try to convert each word with an embeddings and count how many I miss
+emb = pd.read_pickle(args.read_emb)
+vocab = emb["token"].unique()
+print(len(vocab))
+total_words = []
+total_tokens = []
+for index, row in objects[0].iterrows():
+    total_words += _to_w2v_indexes(row["tokens"], vocab)
+    total_tokens += row["tokens"]
+print("Missing Words:", len(set(total_words)))
+print("Coverage:", 1-len(set(total_words))/len(set(total_tokens)))
+
 
 if args.quick_bert_convert:
     total_tokens = []

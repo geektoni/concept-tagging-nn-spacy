@@ -16,10 +16,14 @@ import matplotlib.patches as mpatches
 import seaborn as sns
 sns.set(font_scale=1.3)
 
+from mpl_toolkits.mplot3d import Axes3D
+
+
 font = {'size' : 13}
 matplotlib.rc('font', **font)
 
 selected_tokens = ["movie.name", "director.name", "actor.name", "producer.name"]
+selected_tokens = ["movie.name"]
 
 def get_cmap(n, name='hsv'):
     '''Returns a function that maps each index in 0, 1, ..., n-1 to a distinct
@@ -47,7 +51,7 @@ def convert_with_emb(word, w2v_vocab):
 def convert_elmo_concepts_emb(x, W):
     return torch.sum(x * W[:, None, None], axis=0).numpy()
 
-def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
+def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False, D=False):
     "Creates and TSNE model and plots it"
     labels = []
     tokens = []
@@ -66,7 +70,8 @@ def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
                             tokens.append(converted)
                         else:
                             if elmo:
-                                w = torch.tensor([1/3, 1/3, 1/3])
+                                w = torch.tensor([0.4030, 0.2430, 0.0301])
+                                #w = torch.tensor([1/3, 1/3, 1/3])
                                 x = torch.FloatTensor(e["tokens_emb"])
                                 tokens.append(
                                     convert_elmo_concepts_emb(x, w)[i]
@@ -78,7 +83,7 @@ def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
             pbar.update(1)
 
     labels_plot = list(set(labels))
-    colormap_base = get_cmap(len(labels_plot), name="viridis")
+    colormap_base = get_cmap(len(labels_plot), name="prism")
     colormap = []
     for i in range(0, len(labels_plot)):
         colormap.append(matplotlib.colors.rgb2hex(colormap_base(i)[:3]))
@@ -86,6 +91,8 @@ def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
 
     labels_value = []
     labels_plot_colors = []
+    D_palette = sns.color_palette("muted", len(labels_plot))
+
     for l in labels:
         for i in range(0, len(labels_plot)):
             if l == labels_plot[i]:
@@ -95,7 +102,8 @@ def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
 
     if not random_:
         print("Running TNSE")
-        tsne_model = TSNE(perplexity=40, n_components=2, init='pca', n_iter=2500, random_state=23, n_jobs=-1)
+        tsne_model = TSNE(perplexity=40, n_components=2 if not D else 3,
+                          init='pca', n_iter=2500, random_state=23, n_jobs=-1)
         new_values = tsne_model.fit_transform(tokens)
     else:
         new_values = []
@@ -108,18 +116,35 @@ def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
 
     x = []
     y = []
+    z = []
     for value in new_values:
         x.append(value[0])
         y.append(value[1])
+        if D:
+            z.append(value[2])
 
     if legend:
         fig, ax = plt.subplots(figsize=(12, 6))
     else:
         fig, ax = plt.subplots(figsize=(12, 6))
 
-    data = pd.DataFrame(list(zip(x, y, labels_plot_colors)), columns=["x", "y", "Concept"])
-    sns.set_palette(sns.color_palette("muted", len(labels_plot)))
-    scatter = sns.scatterplot(data=data, x="x", y="y", hue="Concept", s=50)
+    if D:
+        fig = plt.figure(figsize=(12,6))
+        ax = fig.gca(projection='3d', facecolor="white")
+
+    if not D:
+        data = pd.DataFrame(list(zip(x, y, labels_plot_colors)), columns=["x", "y", "Concept"])
+        sns.set_palette(sns.color_palette("muted", len(labels_plot)))
+        scatter = sns.scatterplot(data=data, x="x", y="y", hue="Concept", s=50)
+    else:
+        data = pd.DataFrame(list(zip(x, y, z, labels_value)), columns=["x", "y", "z", "Concept"])
+        sns.set_palette(sns.color_palette("muted", len(labels_plot)))
+        #ax.scatter(data["x"], data["y"], zs=0, zdir='z', c=data["Concept"], cmap="tab10", marker='o')
+        ax.scatter(data["x"], data["y"], data["z"], c=data["Concept"], cmap="tab10", marker='o', edgecolors="w")
+        ax.set_xlabel('X')
+        ax.set_ylabel('Y')
+        ax.set_zlabel('Z')
+        #scatter = sns.scatterplot(data=data, x="x", y="y", z="z", hue="Concept", s=50)
 
     handles = []
     for i in range(0, len(labels_plot)):
@@ -133,7 +158,8 @@ def tnse_plot(model, emb, random_=False, save=None, legend=True, elmo=False):
                     bbox_to_anchor=(0., 1.02, 1., .102),
                     ncol=len(labels_plot))
     else:
-        ax.legend_.remove()
+        if not D:
+            ax.legend_.remove()
 
     if save is not None:
         plt.tight_layout()
@@ -150,6 +176,7 @@ if __name__ == "__main__":
     parser.add_argument("--save", type=str, help="Save the image to disk")
     parser.add_argument("--no-legend", action="store_false", help="Plot also the legend", default=True)
     parser.add_argument("--elmo", action="store_true", help="Assign label randomly", default=False)
+    parser.add_argument("--D", action="store_true", help="Assign label randomly", default=False)
 
     # Parse the arguments
     args = parser.parse_args()
@@ -167,4 +194,4 @@ if __name__ == "__main__":
         objects.append(pd.read_pickle(f, compression="infer"))
 
     # Plot the visualization
-    tnse_plot(objects[0], emb, random_=args.random, save=args.save, legend=args.no_legend, elmo=args.elmo)
+    tnse_plot(objects[0], emb, random_=args.random, save=args.save, legend=args.no_legend, elmo=args.elmo, D=args.D)

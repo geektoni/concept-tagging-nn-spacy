@@ -67,6 +67,9 @@ if __name__ == "__main__":
             if char_emb == "True" and more_features == "False":
                 continue
 
+            if more_features == "True" and char_emb == "False":
+                continue
+
             # Generate the dictionary key
             key = "{}-{}-{}-{}-{}-{}-{}-{}".format(
                 model_type, hidden, epochs, batch_size, lr, drop_rate, emb_norm, embedding)
@@ -81,20 +84,45 @@ if __name__ == "__main__":
     with open("result_table.csv", "w") as output:
         output.write("\\begin{table*}[]\n"
                      "\centering\n"
-                     "\\resizebox{\\textwidth}{!}{%"
-                     "\\begin{tabular}{@{}lllllllll@{}}\n")
-        output.write("Model & hidden & epochs & batch & lr & drop rate & emb norm & emb & min F1 / mean F1 / best F1 \\\\ \hline \n")
+                     "\\resizebox{\\textwidth}{!}{%\n"
+                     "\\begin{tabular}{@{}llllllll@{}}\n")
+        output.write("Model & Hidden & Epochs & Batch & Lr & Drop rate & Emb & Min $F_1$ / Mean $F_1$ / Best $F_1$ \\\\ \hline \n")
         for k in sorted(results.keys(), key=get_sorted):
             values = k.split("-")
             embedding_name = values[7] if values[7] != "elmo_combined" else "elmo (comb)"
-            output.write("{} & {} & {} & {} & {}& {}& {}& {} &".format(
-                values[0], values[1], values[2], values[3], values[4], values[5], values[6], embedding_name
+            output.write("{} & {} & {} & {} & {}& {}& {}&".format(
+                values[0], values[1], values[2], values[3], values[4], values[5], embedding_name
             ))
-            output.write("\\begin{tabular}[c]{@{}lll@{}}")
+            output.write("\\begin{tabular}[c]{@{}llll@{}}")
+
+            # Compute max value
+            max = 0
+            for e in results[k]:
+                if float(e[2]) > max:
+                    max = float(e[2])
+
             for e in results[k]:
                 more_features = e[0]
                 char_emb = e[1]
-                output.write("{:.2f} & {:.2f} & {:.2f} \\\\ \n".format(float(e[5]), float(e[2]), float(e[4])))
+
+                # Print information about the data
+                if more_features == "True":
+                    if char_emb == "True":
+                        type = "(NER+POS+CHAR)"
+                    else:
+                        type = "(NER+POS)"
+                else:
+                    if char_emb == "True":
+                        type = "(CHAR)"
+                    else:
+                        type = ""
+
+                if float(e[2]) == max:
+                    output.write("{:.2f} & \\textbf{{ {:.2f} }} & {:.2f} & {} \\\\ \n".format(
+                        float(e[5]), float(e[2]), float(e[4]), type))
+                else:
+                    output.write("{:.2f} & {:.2f} & {:.2f} & {} \\\\ \n".format(
+                        float(e[5]), float(e[2]), float(e[4]), type))
             output.write("\end{tabular} \\\\ \hline \n")
 
         output.write("\end{tabular}}\n"
