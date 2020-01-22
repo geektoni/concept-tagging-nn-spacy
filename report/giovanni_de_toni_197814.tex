@@ -70,24 +70,53 @@ of concepts. The most basic methods are statistical
 language models (e.g., Weight Finite State Automa) 
 which are easy to train and yield quite impressive 
 results with a little tuning. However, with the rise 
-of recurrent neural networks, we can now train 
+of recurrent neural networks, we can now develop 
 models which have better performances than their 
 statistic counterparts. Moreover, thanks to the use 
 of specific word embeddings (e.g., word2vec, GloVe, 
 ELMo etc.), we can boost the performances even more.
-This work takes as a starting point a previous work 
-on the topic \cite{gobbi} and it tries to improve 
+This work takes as a starting point a previous paper 
+on the topic by \citet{gobbi} and it tries to improve 
 the results of some of the neural models presented 
-there, by adding new features (NER and POS tags) and 
+by adding new features (NER and POS tags) and 
 by trying to employ more intelligent embeddings 
-(ELMo, BERT and ConceptNet). The report is 
+(ELMo, BERT and ConceptNet). We conducted several experiments with a few selected architectured and we tried to outperform the performances presented (with respect also to the classical WFST methods).  The report is 
 structured as follow: the second section describe 
-the models used for the experiments, the third 
-section describes the choosen embeddings. The forth 
-and fitfth sections describe the analysis of the 
-corpora and the embeddings. Ultimately,  the sixth 
-and seventh section reports the experiments 
-performed and the conclusions.  	
+the models used for the experiments, the third section gives a brief explanation about the possible type of embeddings and then it describes the chosen embeddings for our project.  The fourth section describes the analysis of the 
+corpora and of the embeddings. Ultimately,  the fifth
+and the sixth sections report the experiments 
+performed and the discussion over the results.
+ 	
+
+\begin{figure*}[t]
+\begin{subfigure}{0.5\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{img/word2vec-embeddings.png}
+  \caption{w2v\_trimmed}
+  \label{fig:sfig1}
+\end{subfigure}%
+\begin{subfigure}{0.5\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{img/elmo-embeddings.png}
+  \caption{ELMo}
+  \label{fig:sfig2}
+\end{subfigure}\\
+\begin{subfigure}{0.5\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{img/bert-embeddings.png}
+  \caption{BERT}
+  \label{fig:sfig2}
+\end{subfigure}%
+\begin{subfigure}{0.5\linewidth}
+  \centering
+  \includegraphics[width=\linewidth]{img/conceptnet-embeddings.png}
+  \caption{ConceptNet}
+  \label{fig:sfig2}
+\end{subfigure}
+\caption{These plots show the embeddings representation of four major concepts of the training dataset. Namely, \textit{movie.name} (blue), \textit{actor.name} (orange), \textit{producer.name} (red) and \textit{director.name} (green). We can clearly see how some embeddings enable nicer clusters for some concepts. 
+}
+\label{fig:fig-emb}
+\end{figure*}
 
 \section{Models}
 
@@ -100,8 +129,9 @@ following architectures: LSTM and LSTM-CRF.
 Moreover, we extended the features used by the 
 various models by providing also the Part-of-Speech 
 tags and the Named Entities Recognition (NER) 
-entities as one-hot-encoded vectors.
-Long-Short Term Memor (LSTM) \cite{lstm} is a model 
+entities as one-hot-encoded vectors. We now describe the two selected architectures.
+
+\textit{Long-Short Term Memory} (LSTM) \cite{lstm} is a model 
 which extends and improve the previous RNN by 
 solving the vanishing/exploding gradients problem. 
 We tested a simple LSTM which receives in input the 
@@ -109,7 +139,8 @@ embeddings of the words concatenated with the new
 features. Moreover, we tested another LSTM model 
 which uses also the characters embeddings obtained 
 using a convolutional layer (LSTM-CHAR-REP). 
-We experimented also with the LSTM-CRF model \cite{
+
+We experimented also with the \textit{LSTM-CRF} model \cite{
 yao2014recurrent, DBLP:journals/corr/HuangXY15} in 
 which the LSTM provides the class scores for each 
 token and then the Viterbi algorithm is used to 
@@ -121,45 +152,19 @@ convolution was also evaluated (LSTM-CRF-CHAR-REP).
 
 \section{Embeddings}
 
-As a first step to improve the performances of the previous work we concentrated on evaluating several recently proposed pre-trained language models to produce words representations. Generally speaking, language representations can be either \textit{context-free} or \textit{contextual}. 
+As a first step to improve the performances of the previous work we concentrated on evaluating several recently proposed pre-trained language models to produce words representations.
+
+Generally speaking, language representations can be either \textit{context-free} or \textit{contextual}. 
 Context-free means that the word representation is generated without looking at the context in which the word is used. For instance, the word ``\textit{season}" may have different meanings with respect to the context in which it is placed (e.g., ``\textit{Summer is my favourite season}" and ``\textit{Add some season to the chicken and then serve}"), but in a context-free model it will get the same representation (embedding). A contextual representation takes care also of the context in which a word is used.
 Moreover, the contextual representations can be further divided into two other categories: \textit{unidirectional} or \textit{bidirectional}. 
-A unidirectional model contextualizes a given term by just looking at the words on the right (or on the left) of it.  A bidirectional model instead looks both on the left and on the right of the target word before producing a representation. There are also \textit{swallow bidirectional models} which combine two unidirectional models (one for the left side and one for the right side) to give a more complete representation. In our work, we tested three different embeddings, one for each category (context-free, contextual swallow bidirectional and contextual bidirectional): \textit{ConceptNet}, \textit{ELMo} and \textit{BERT}.
 
-\begin{figure*}[!ht]
-\begin{subfigure}{0.5\linewidth}
-  \centering
-  \includegraphics[width=\linewidth]{img/word2vec-embeddings.png}
-  \caption{Default Embeddings}
-  \label{fig:sfig1}
-\end{subfigure}%
-\begin{subfigure}{0.5\linewidth}
-  \centering
-  \includegraphics[width=\linewidth]{img/elmo-embeddings.png}
-  \caption{Elmo Embeddings}
-  \label{fig:sfig2}
-\end{subfigure}\\
-\begin{subfigure}{0.5\linewidth}
-  \centering
-  \includegraphics[width=\linewidth]{img/bert-embeddings.png}
-  \caption{Bert Embeddings}
-  \label{fig:sfig2}
-\end{subfigure}%
-\begin{subfigure}{0.5\linewidth}
-  \centering
-  \includegraphics[width=\linewidth]{img/conceptnet-embeddings.png}
-  \caption{ConceptNet Embeddings}
-  \label{fig:sfig2}
-\end{subfigure}
-\caption{These plots shows the embeddings representation of the four major concepts of the train dataset. Namely, movie.name (blue), actor.name (orange), producer.name (red) and director.name (green). We can clearly see how some embeddings enable much nicer clusters for some concepts, while others seems not to be able to do it.}
-\label{fig:fig}
-\end{figure*}
+A unidirectional model contextualizes a given term by just looking at the words on the right (or on the left) of it.  A bidirectional model instead looks both on the left and on the right of the target word before producing a representation. There are also \textit{swallow bidirectional models} which combine two unidirectional models (one for the left side and one for the right side) to give a more complete representation. In our work, we tested three different embeddings, one for each category (context-free, contextual swallow bidirectional and contextual bidirectional): \textit{ConceptNet}, \textit{ELMo} and \textit{BERT}. We then compared their performances with the one used in the original work called \textit{w2v\_trimmed} (a standard word2vec representation).
 
 \subsection{ConceptNet}
 ConceptNet Numberbatch \cite{speer2017conceptnet} is a context-free language model. It is a set of word embeddings and it was made by combining previously existing models, namely, GloVe \cite{pennington2014glove}, word2vec \cite{mikolov2013efficient} and OpenSubtitles 2016 \cite{Lison2016OpenSubtitles2016EL}. Moreover, it leverages the data of the ConceptNet knowledge graph to enrich its representation. The authors reached this goal by using a retrofitting procedure to adjust the word embedding matrix by using their knowledge graph. Thanks to this procedure, ConceptNet is also intrinsically multilingual since this method pushes the model to use the same embedding space both for English words and words in different languages (since they share the same meaning).  This work uses the Numberbatch 19.08 English-only model \footnote{\url{https://github.com/commonsense/conceptnet-numberbatch}} which contains 516782 embeddings with a dimension of 300.
 
 \subsection{ELMo}
-ELMo \cite{Peters:2018} is a deep contextualized word representation which captures both syntactic, semantic and polysemy characteristics of a given word. It uses a deep shallow bidirectional language model (biLM) trained on a large corpus. The ELMo method differs from the classical context-free approaches because each word embedding is obtained by looking at the entire input sentence. The generated representation are deep because they are a function of all the layers of the biLM. Moreover, each layer models certain features of the given word. The original work states that the higher-level LSTM states capture context-dependent aspects of the word meaning, while lower-level states capture aspects of the syntax.
+ELMo \cite{Peters:2018} is a deep contextualized word representation which captures both syntactic, semantic and polysemy characteristics of a given word. It uses a deep shallow bidirectional language model (biLM) trained on a large corpus by looking at the entire input sentences. The generated representation are deep because they are a function of all the layers of the biLM. Moreover, each layer models certain features of the given word. The original work states that the higher-level LSTM layers capture context-dependent aspects of the word meaning, while lower-level states capture aspects of the syntax.
 We used the pre-trained small ELMo model \footnote{\url{https://allennlp.org/elmo}} with the embedding dimension of 1024.
 In this work, we collected all the ELMo layer representation (3) of each word of each sentence in the training dataset. We then devised two strategies to combine them to obtain the final embeddings: the first strategy produces a linear combination given an equal weighting over the layers and the second strategy learns directly the weights of the linear combination during the training of the LSTM concept tagger such to fine-tune the embeddings to our problem.
 
@@ -167,91 +172,122 @@ In this work, we collected all the ELMo layer representation (3) of each word of
 \subsection{BERT}
 
 BERT (Bidirectional Encoder Representations from Transformers) \cite{devlin2018bert} is a relatively new language representation model released in 2019. It pre-trains deep bidirectional representations from unlabeled texts by exploiting both the left and right context. The model is a multi-layer bidirectional Transformer encoder. The authors state that this new representation solves the previous limitations of pre-trained models (e.g., ELMo). They argue that the standard LMs are unidirectional, thus limiting the kind of architectures which can be used during training. They also state that other pre-trained embeddings like ELMo are just shallow bidirectional since they use several separate models to capture the left and right context.
-There are two steps in the BERT framework: pre-training and fine-tuning. During the first phase, the model is trained on unlabeled data over two separate unsupervised training tasks: Masked LM and Next Sentence Prediction (NSP).  The Masked LM task consists of predicting some words of the given input phrase which are masked beforehand.  This would enable to train a real deep bidirectional representation since bidirectional conditioning on standard LM is not possible. The Next Sentence Prediction (NSP) consists of prediction relationships between sentences which are usually not captured by LM. 
+There are two steps in the BERT framework: \textit{pre-training} and \textit{fine-tuning}. During the first phase, the model is trained on unlabeled data over two separate unsupervised training tasks: \textit{Masked LM} and \textit{Next Sentence Prediction (NSP)}.  The Masked LM task consists of predicting some words of the given input phrase which are masked beforehand.  This would enable to train a real deep bidirectional representation since bidirectional conditioning on standard LM is not possible. The Next Sentence Prediction (NSP) consists of prediction relationships between sentences which are usually not captured by LM. 
 During the fine-tuning phase, the model is initialized with the pre-trained parameters obtained in the previous stage and it is fine-tuned on the desired task. 
 In our work, we used a pre-trained BERT model\footnote{\url{https://pypi.org/project/bert-embedding/}} to get the word embeddings directly without doing the fine-tuning phase. More specifically, the BERT model used was pre-trained on the BookCorpus \cite{moviebook} and English Wikipedia. The embedding dimension was 768.  
 
-\begin{table*}[th!]
+\begin{table*}[t]
 \centering
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{@{}|l|l|l|l|l|l|l|l|@{}}
+\begin{tabular}{@{}|l|l|l|l|l|l|l|c|@{}}
 \hline
-Model & Hidden & Epochs & Batch & Lr & Drop rate & Emb & Min $F_1$ / Mean $F_1$ / Best $F_1$ \\ \hline 
-lstm & 200 & 15 & 20 & 0.001& 0.7& none&\begin{tabular}[c]{@{}llll@{}}81.88 & 83.17 & 84.35 &  \\ 
-82.85 & \textbf{ 83.50 } & 84.37 & (NER+POS+CHAR) \\ 
+\textbf{Model} & \textbf{Hidden} & \textbf{Epochs} & \textbf{Batch} & \textbf{Lr} & \textbf{Drop rate} & \textbf{Emb} & \textbf{Min} $F_1$ / \textbf{Mean} $F_1$ / \textbf{Best} $F_1$ \\ \hline 
+LSTM & 200 & 15 & 20 & 0.001& 0.7& w2v\_trimmed&\begin{tabular}[c]{@{}lll@{}}81.88 & 83.17 & 84.35\\ 
+82.23 & \textbf{ 83.35 } & 84.22\\ 
 \end{tabular} \\ \hline 
-lstm & 200 & 15 & 20 & 0.001& 0.7& conceptnet&\begin{tabular}[c]{@{}llll@{}}81.58 & 82.49 & 83.75 &  \\ 
-82.44 & \textbf{ 83.03 } & 83.63 & (NER+POS+CHAR) \\ 
+LSTM & 200 & 15 & 20 & 0.001& 0.7& ConceptNet&\begin{tabular}[c]{@{}lll@{}}81.58 & 82.49 & 83.75\\ 
+81.78 & \textbf{ 82.94 } & 84.11\\ 
 \end{tabular} \\ \hline 
-lstm & 200 & 30 & 20 & 0.001& 0.7& bert&\begin{tabular}[c]{@{}llll@{}}77.06 & 79.10 & 81.39 &  \\ 
-80.80 & \textbf{ 82.29 } & 83.30 & (NER+POS+CHAR) \\ 
+LSTM & 200 & 30 & 20 & 0.001& 0.7& BERT&\begin{tabular}[c]{@{}lll@{}}77.06 & 79.10 & 81.39\\ 
+80.51 & \textbf{ 82.13 } & 83.66\\ 
 \end{tabular} \\ \hline 
-lstm & 200 & 30 & 20 & 0.001& 0.7& elmo&\begin{tabular}[c]{@{}llll@{}}81.77 & 82.65 & 83.48 &  \\ 
-83.14 & \textbf{ 84.29 } & 85.56 & (NER+POS+CHAR) \\ 
+LSTM & 200 & 30 & 20 & 0.001& 0.7& ELMo&\begin{tabular}[c]{@{}lll@{}}81.77 & 82.65 & 83.48\\ 
+83.77 & \textbf{ 84.40 } & 85.35\\ 
 \end{tabular} \\ \hline 
-lstm & 200 & 30 & 20 & 0.001& 0.7& elmo (comb)&\begin{tabular}[c]{@{}llll@{}}75.19 & 82.29 & 85.14 &  \\ 
-83.17 & \textbf{ 84.71 } & 85.78 & (NER+POS+CHAR) \\ 
+LSTM & 200 & 30 & 20 & 0.001& 0.7& ELMo (fine tuned)&\begin{tabular}[c]{@{}lll@{}}75.19 & 82.29 & 85.14\\ 
+82.88 & \textbf{ 84.47 } & 85.60\\ 
 \end{tabular} \\ \hline 
-lstmcrf & 200 & 10 & 1 & 0.001& 0.7& none&\begin{tabular}[c]{@{}llll@{}}84.85 & \textbf{ 85.70 } & 86.83 &  \\ 
-84.53 & 85.53 & 86.49 & (NER+POS+CHAR) \\ 
+LSTM-CRF & 200 & 10 & 1 & 0.001& 0.7& w2v\_trimmed&\begin{tabular}[c]{@{}lll@{}}84.85 & \textbf{ 85.70 } & 86.83\\ 
+84.66 & 85.34 & 86.30\\ 
 \end{tabular} \\ \hline 
-lstmcrf & 200 & 10 & 1 & 0.001& 0.7& conceptnet&\begin{tabular}[c]{@{}llll@{}}85.46 & \textbf{ 85.99 } & 86.52 &  \\ 
-85.37 & 85.37 & 85.37 & (NER+POS+CHAR) \\ 
+LSTM-CRF & 200 & 10 & 1 & 0.001& 0.7& ConceptNet&\begin{tabular}[c]{@{}lll@{}}85.46 & \textbf{ 85.94 } & 86.52\\ 
+85.49 & 85.55 & 85.61\\ 
 \end{tabular} \\ \hline 
-lstmcrf & 200 & 20 & 1 & 0.001& 0.7& bert&\begin{tabular}[c]{@{}llll@{}}82.33 & \textbf{ 83.73 } & 84.95 &  \\ 
-82.01 & 83.61 & 85.67 & (NER+POS+CHAR) \\ 
+LSTM-CRF & 200 & 20 & 1 & 0.001& 0.7& BERT&\begin{tabular}[c]{@{}lll@{}}82.33 & 83.73 & 84.95\\ 
+83.10 & \textbf{ 83.77 } & 84.98\\ 
 \end{tabular} \\ \hline 
-lstmcrf & 200 & 20 & 1 & 0.001& 0.7& elmo&\begin{tabular}[c]{@{}llll@{}}84.50 & \textbf{ 85.53 } & 86.39 &  \\ 
-84.37 & 85.40 & 86.88 & (NER+POS+CHAR) \\ 
+LSTM-CRF & 200 & 20 & 1 & 0.001& 0.7& ELMo&\begin{tabular}[c]{@{}lll@{}}84.50 & \textbf{ 85.53 } & 86.39\\ 
+84.12 & 85.29 & 86.29\\ 
 \end{tabular} \\ \hline 
-lstmcrf & 200 & 10 & 1 & 0.001& 0.7& elmo (comb)&\begin{tabular}[c]{@{}llll@{}}84.34 & 85.72 & 86.56 &  \\ 
-84.80 & \textbf{ 85.75 } & 86.84 & (NER+POS+CHAR) \\ 
+LSTM-CRF & 200 & 10 & 1 & 0.001& 0.7& ELMo (fine tuned)&\begin{tabular}[c]{@{}lll@{}}84.34 & 85.72 & 86.56\\ 
+83.96 & \textbf{ 85.81 } & 86.81\\ 
 \end{tabular} \\ \hline 
 \end{tabular}}
-\caption{Evaluation results of the various models. Each model is bidirectional. The performance were obtained by recording the results for 25 runs by varying the inizialization of the models and by keeping their hyperparameters fixed. The first line show the results without any improvements. The second line shows the results by adding the NER and POS tagging features. The third line shows the results by adding the character convolution and the NER and POS tagging features. The \textbf{bold} values indicates the best result for that particular embedding.}
-\label{tab:my-table}
+\caption{Evaluation results of the various models. Each model is bidirectional. The performances were obtained by recording the results for 25 runs by varying the initialization parameter of the models and by keeping their hyperparameters fixed. The rightmost column is divided as such: the first line shows the results without any improvements and the second line shows the results by adding the character convolution (CHAR) and the NER and POS tagging features. The \textbf{bold} values indicate the best result for that particular embedding.
+}
+\label{tab:final-results}
 \end{table*}
 
 \section{Data Analysis}
 
-We evaluated our solutions by using the NL2SparQL4NLU dataset \cite{Chen2014DerivingLR, gobbi}. It corresponds to the MOVIE dataset of the original paper. It includes sentences taken from the movie domain (e.g., ``\textit{trailer for star wars a new hope}"). The dataset contains 3338 and 1084 sentences for the train and test set respectively. The dictionary size (\# of unique tokens) is of 1728 (train) and 1039 (test). The average sentence length is 6.42 (train) and 6.52 (test) with an OOV rate between the datasets of 24\%. We have a total of 23 concepts (with a total of 43 concepts in IOB format). Each word was also POS tagged and there are 50 different tags between the training and test set (taken from the Tree Tagger POS list\footnote{\url{https://courses.washington.edu/hypertxt/csar-v02/penntable.html}}).
-We generated a new dataset by analyzing each sentence using a Named Entity Recognition (NER) tool, spaCy \cite{spacy}. It found 398 (1,86\%)  and 169 (2,37\%) entities inside the training and test set respectively. These entities were of 9 different types\footnote{\url{https://spacy.io/api/annotation\#named-entities}}.
+We evaluated our solutions by using the NL2SparQL4NLU dataset \footnote{\url{https://github.com/esrel/NL2SparQL4NLU}}. It corresponds to the MOVIE dataset of the original paper. It includes sentences taken from the movie domain (e.g., ``\textit{trailer for star wars a new hope}"). The dataset contains 3338 and 1084 sentences for the train and test set respectively. The dictionary size (\# of unique tokens) is of 1728 (train) and 1039 (test) with an OOV rate between the datasets of 24\%. The average sentence length is 6.42 (train) and 6.52 (test). We have a total of 23 concepts (with 43 concepts in IOB format). Each word was also POS tagged and there are 50 different tags between the training and test set (taken from the Tree Tagger POS list\footnote{\url{https://courses.washington.edu/hypertxt/csar-v02/penntable.html}}).
+We generated a new dataset by analyzing each sentence using a Named Entity Recognition (NER) tool, spaCy\footnote{\url{https://spacy.io/}}. It found 398 (1,86\%)  and 169 (2,37\%) entities inside the training and test set respectively. These entities were of 9 different types\footnote{\url{https://spacy.io/api/annotation\#named-entities}}.
 
-\section{Embedding Analysis}
-We evaluated also the various embeddings using the embedding coverage (namely, how many words in the dataset dictionary can be found in the embedding matrix) and we compared it with the embedding used in the original work. With the default embeddings (w2v\_trimmed), the coverage is 96.18\% (66 words not recognized) while with ConceptNet the coverage is 91.90\% (140 words not recognized). For BERT and ELMo models we did a visual analysis instead. More specifically, we used T-sne \cite{Maaten2008VisualizingDU} to reduce the dimensionality of the BER/ELMo embeddings down to 2-dimensional data points and then we plotted the results for the four most represented concepts in the dataset. See Figure X for the results. It is possible to notice how the default embeddings, ELMo and BERT produce nice clusters for the ``movie.name" category. The other categories are slightly mixed together which is understandable since person names may end to have the same embedding. ConceptNet does not produce significant clusters (apart from a small one composed by ``\textit{director.name}" elements.
+\subsection{Embeddings Analysis}
+We evaluated also the various embeddings using the \textit{embedding coverage} metric (namely, how many words in the dataset dictionary can be found in the embedding matrix) and we compared it with the embeddings used in the original work. With the default embeddings (w2v\_trimmed), the coverage is 96.18\% (66 words not recognized) while with ConceptNet the coverage is 91.90\% (140 words not recognized). For BERT and ELMo models we performed a visual analysis instead by using dimensionality reduction techiques. More specifically, we used \textit{t-SNE} \cite{Maaten2008VisualizingDU} to reduce the dimensionality of the BERT/ELMo embeddings down to 2-dimensional data points and then we plotted the results for the four most represented concepts in the dataset. See Figure \ref{fig:fig-emb} for the results. It is possible to notice how the default embeddings, ELMo and BERT produce nice clusters for the ``movie.name" category. The other categories are slightly mixed together which is expected. For instance, \textit{actor.name} and \textit{director.name} may end up with the same embedding since a person name can be referring both to an actor and to a movie director. ConceptNet does not produce significant clusters (apart from a small one composed by ``\textit{director.name}" elements. This however could be caused by the \textit{t-SNE} reduction.
 
-\begin{figure*}[!ht]
+\begin{figure*}[t]
 \begin{subfigure}{0.5\linewidth}
   \centering
-  \includegraphics[width=\linewidth]{img/elmo-embeddings-learned.png}
-  \caption{Learned ELMo Embeddings 2D}
+  \includegraphics[width=\linewidth]{img/elmo-embeddings-not-trained-2D.png}
+  \caption{Default ELMo Embeddings (\textit{movie.name} only)}
   \label{fig:sfig1}
 \end{subfigure}%
 \begin{subfigure}{0.5\linewidth}
   \centering
-  \includegraphics[width=\linewidth]{img/elmo-embeddings-learned-clusters.png}
-  \caption{Learned Elmo Embeddings 3D (\textit{movie.title} only).}
+  \includegraphics[width=\linewidth]{img/elmo-embeddings-trained-2D.png}
+  \caption{Fine-Tuned ELMo Embeddings (\textit{movie.name} only).}
   \label{fig:sfig2}
-\end{subfigure}
-\caption{These plots shows the embeddings representation obtained by learning the ELMo linear combination. Namely, movie.name (blue), actor.name (orange), producer.name (red) and director.name (green). The new ELMo embeddings seems to not have improved the previous situation. However, in higher dimension we notice how the enabled better clusterizations in a 3-dimensional plane.}
-\label{fig:fig}
+\end{subfigure}%\\
+%\begin{subfigure}{0.5\linewidth}
+%  \centering
+%  \includegraphics[width=\linewidth]{img/elmo-%embeddings-not-trained.png}
+%  \caption{Averaged ELMo Embeddings 3D}
+%  \label{fig:sfig1}
+%\end{subfigure}%
+%\begin{subfigure}{0.5\linewidth}
+%  \centering
+%  \includegraphics[width=\linewidth]{img/elmo-%embeddings-trained.png}
+%  \caption{Learned Elmo Embeddings 3D %(\textit{movie.title} only).}
+%  \label{fig:sfig2}
+%\end{subfigure}
+\caption{These plots shows how the embeddings clustering for the ``\textit{movie.name}" concept changes between the averaged version and the learned one. It is possible to see that by learning to combine the ELMo layers while training the tagger improves the clustering of the concept.}
+\label{fig:fine-tuned-emb}
 \end{figure*}
 
 \section{Experiments}
 
-We evaluated the models by doing a hyperparameter search by starting from the values used in the original work. We tried to find the hyperparameter combination which maximizes the F1 score over the test dataset. The final results can be seen in Table X.
-When using a classical LSTM model, it is possible to see how combining the character representation and the POS/NER additional features lead to results which are better than the default baseline. This happens for all the embeddings considered. Moreover, it seems that the ELMo embeddings provide better performances than the other competitors. 
-The BERT embeddings give instead poor results (more than 3\% difference between the F1 mean baseline in some cases).
-When using the LSTM-CRF we obtained slightly different results. The LSTM-CRF generally outperforms the simple LSTM model, but here the combination CHAR+NER+POS gives good results only when using the ELMo embedders. By employing BERT or ConceptNet we obtain a better F1 score without using those features (the difference is minimal).
-Generally, we also noticed that by making the model learn how to combine the ELMo weightings (elmo-comb) to generate the final embeddings is beneficial for the final performances. Apparently, by fine-tuning the ELMo weightings, it is possible to generate better ``concept clusters" in the embedding space.  Then, the network can effectively learn the hyperplanes which separate each cluster thus leading to less mistagging. [add data about mistagging]
-This can be seen from Figure X in which the we show the new 3-dimensional cluster of the ``\textit{movie.name}" concept. 
-By using LSTM-CRF and ELMo (learned) we were able to get the best max F1 score of 87.18. Ultimately, the best combination overall with a mean F1 value of  85.99 is obtained by using the ConceptNet embeddings without additional features and the LSTM-CRF model. All these results also surpass the previous baselines obtained with the WFST (83.73).
+We evaluated the models by doing a hyperparameter search by starting from the values used in the original work. We tried to find the hyperparameter combination which maximizes the mean $F_1$ score over the test dataset. The final results can be seen in Table \ref{tab:final-results}.
+When using a classical LSTM model, it is clear that by combining the character representation (CHAR) and the additional features (POS+NER) we obtain better results than the default baseline. This happens regardless of the embeddings employed. Moreover, the ELMo embeddings provide better performances than the other competitors. 
+The BERT embeddings give instead less performing results (more than 3\% difference between the $F_1$ mean baseline in some cases). However, it seems that using different embeddings does improve the baseline.
+When using the LSTM-CRF we obtained slightly different results. The LSTM-CRF generally outperforms the simple LSTM model, but here adding the CHAR+NER+POS features gives good results only when using the fine-tuned ELMo embeddings.  By employing BERT, ConceptNet or the default embeddings we obtain a better $F_1$ score without using those features (even if the difference is minimal).
+By using LSTM-CRF and ELMo (fine-tuned) we were able to reach the highest $F_1$ score of 86.81 (the baseline model reaches a maximum of 86.83). Ultimately, the best combination overall with a mean $F_1$ value of  85.94 is obtained by using the ConceptNet embeddings without additional features and the LSTM-CRF model. All these results surpass the previous baseline obtained with the WFST (83.73).
 The models were written in Python and PyTorch by forking from the previous project\footnote{\url{https://github.com/fruttasecca/concept-tagging-with-neural-networks}} and both the code and the dataset are available on Github\footnote{\url{https://github.com/geektoni/concept-tagging-nn-spacy}}.
+
+\subsection{Effects of Embeddings Fine-Tuning}
+
+Next we focused on analyzing the used embeddings by focalizing on the one which gave the most interesting results. We studyied the visual differences between the fine-tuned and standard ELMo embeddings. We also evaluated the SSE (Error Sum of Squares) of the generated clusters for certain concepts. By fine-tuning the ELMo weightings, it is possible to generate slightly better ``concept clusters" in the embedding space. Figure \ref{fig:fine-tuned-emb} shows an example. We saw an SSE error reduction of almost 50\% with the fine-tuned version (from 13490936.61 to 7267435.40) when considering the \textit{movie.name} concept. This is beneficial because a neural network learns how to divide the features space such to separate with hyperplanes each concept. Then the classification task becomes easier because we just need to check where the representation of my token lies.  However, we also noticed that, since our dataset is imbalanced (the concepts \textit{O} and \textit{movie.title} takes 80\% of the total) only the clusters of the majority classes will be improved. This is corroborated by the fact that by analyzing the confusion matrix of the fine-tuned ELMo models (both LSTM and LSTM-CRF) it is possible to see how the accuracy of the majority concepts increases slightly while the accuracy of the other concepts degrades. See Table \ref{tab:elmo-comp} for a comparison between the ELMo versions. 
+
+\begin{table*}[]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l|l|l|l|l|l|l|l|}
+\cline{2-8}
+ & \textbf{O} & \textbf{movie.name} & \textbf{director.name} & \textbf{actor.name} & \textbf{producer.name} & \textbf{movie.language} & \textbf{movie.release\_date} \\ \hline
+\multicolumn{1}{|l|}{\textbf{Averaged ELMo}} & 0.99584898 & 0.94475655 & 0.85628743 & 0.89855072 & 0.96330275 & \textbf{0.92592593} & \textbf{0.94117647} \\
+\multicolumn{1}{|l|}{\textbf{Fine-Tuned ELMo}} & \textbf{0.99625468} & \textbf{0.96190476} & \textbf{0.87647059} & \textbf{0.91724138} & \textbf{0.98181818} & 0.84745763 & 0.90410959 \\ \hline
+\end{tabular}%
+}
+\caption{Given the major seven concepts from the test dataset, we compute the tagging accuracy when using the LSTM-CRF and the CHAR+POS+NER features. The first five concepts have appear more than 2\% in the entire dataset, while the others appears less than 1\%. It possible to see how the first five performances increases when using the fine-tuned ELMo, while the other two accuracies decreases with respect to the averaged ELMo.}
+\label{tab:elmo-comp}
+\end{table*}
 
 
 \section{Conclusion}
-The experiments showed us how the usage of the correct embeddings is of utmost importance for obtaining state-of-the-art performances on concept tagging tasks. BERT and ELMo pre-trained models provide new embeddings obtained by looking at the context of the phrase. However, they cannot be used directly out-of-the-box but they need to be fine-tuned on the task at hand to be effective. This can be clearly seen by looking at the difference between the ELMo embeddings created by mere averaging of the layers or by learning the weights of the linear combination. This is also the reason why BERT underperformed in some cases. We used an implementation which extracts directly the embeddings without going through the fine-tuning phase described in the original paper. Therefore, the BERT embeddings are not ``trained" to represent the current concept tagging task. However, the fine-tuning must be done properly to be useful since otherwise we just increase the variance of the results (e.g., the ELMo model showed a higher standard deviation with respect to the other competitors when learning the weights for combining the layers). 
-We showed also the impact of adding more features to the original model, more specifically the POS tag and the NER entities. However, we did not see any important improvement. We thought that having extra information like the NER tags could have improved the performances of the models but it was not the case. This process had several issues. For instance, one major problem we found with this method is related to the sparsity of the NER tagging. Over 21000 tokens, only 400~ were tagged with an entity definition (just the 1.9\%). This adds just too little representational power to the original model and therefore it does not produce any huge gain in performances.
+The experiments gave us new insights about the usage of embeddings for obtaining state-of-the-art performances on concept tagging tasks. BERT and ELMo pre-trained models provide new embeddings obtained by looking at the entire phrase. However, they cannot be used directly out-of-the-box but they need to be fine-tuned on the task at hand to be effective. This can be clearly seen by looking at the difference between the ELMo embeddings created by mere averaging of the layers and by learning instead the weights of the linear combination. We showed how ELMo fine-tuned embeddings provides certain advantages with respect to their not-tuned version. We are aware of the issues which arise from our validation methods (in particular, \textit{t-SNE} \cite{wattenberg2016how}) but we believe they still provide useful information. We think this is also the reason why BERT underperformed in some cases. We used an implementation which extracts directly the embeddings without going through the fine-tuning phase described in the original BERT paper. Therefore, the embeddings are not ``trained" to interpret the current concept tagging task and they lead to bad performances.
+We presented also the impact of adding more features to the original model, more specifically, the POS tag and the NER entities. However, we did not see any important improvement. We thought that having extra information like the NER tags could have improved the performances of the models but it was not the case. This happened for several reasons. For instance, one major problem we found with this method is related to the sparsity of the NER tagging. On over 21000 tokens, only 400~ were tagged with an entity definition (just the 1.9\%). This adds just too little discriminative power to the original model and therefore it does not produce any huge gain in performances.
+In conclusion, we were able to surpass classical WFST methods and we were able to almost replicate the results of \citet{gobbi}. However, even by employing more advanced embeddings and new feature combinations, we were unable to generate significative improvements during the evaluation.  
+We think that the general issue that needs to be solved to get better results is the unbalanced dataset we are using. Some concepts are underrepresented (e.g., \textit{actor.type}, \textit{actor.nationality}, etc.) while others are present in large quantity (e.g., \textit{O} and \textit{movie.name}). The model will be pushed to learn to classify the majority classes while ignoring the rest. We believe that this problem can be solved by increasing the size of the dataset. This can be done either by gathering real-world examples or by generating \textit{synthetic sentences} by sampling from a statistical model trained on the original dataset. However, this task was left for future work.
 
 \bibliography{acl2019}
 \bibliographystyle{acl_natbib}
