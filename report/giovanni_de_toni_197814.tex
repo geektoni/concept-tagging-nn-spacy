@@ -179,9 +179,8 @@ In our work, we used a pre-trained BERT model\footnote{\url{https://pypi.org/pro
 \begin{table*}[t]
 \centering
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{@{}|l|l|l|l|l|l|l|c|@{}}
-\hline
-\textbf{Model} & \textbf{Hidden} & \textbf{Epochs} & \textbf{Batch} & \textbf{Lr} & \textbf{Drop rate} & \textbf{Emb} & \textbf{Min} $F_1$ / \textbf{Mean} $F_1$ / \textbf{Best} $F_1$ \\ \hline 
+\begin{tabular}{@{}|l|l|l|l|l|l|l|l|@{}}
+\hline\textbf{Model} & \textbf{Hidden} & \textbf{Epochs} & \textbf{Batch} & \textbf{Lr} & \textbf{Drop rate} & \textbf{Emb} & \textbf{Min} $F_1$ / \textbf{Mean} $F_1$ / \textbf{Best} $F_1$ \\ \hline 
 LSTM & 200 & 15 & 20 & 0.001& 0.7& w2v\_trimmed&\begin{tabular}[c]{@{}lll@{}}81.88 & 83.17 & 84.35\\ 
 82.23 & \textbf{ 83.35 } & 84.22\\ 
 \end{tabular} \\ \hline 
@@ -198,13 +197,13 @@ LSTM & 200 & 30 & 20 & 0.001& 0.7& ELMo (fine tuned)&\begin{tabular}[c]{@{}lll@{
 82.88 & \textbf{ 84.47 } & 85.60\\ 
 \end{tabular} \\ \hline 
 LSTM-CRF & 200 & 10 & 1 & 0.001& 0.7& w2v\_trimmed&\begin{tabular}[c]{@{}lll@{}}84.85 & \textbf{ 85.70 } & 86.83\\ 
-84.66 & 85.34 & 86.30\\ 
+84.66 & 85.35 & 86.30\\ 
 \end{tabular} \\ \hline 
 LSTM-CRF & 200 & 10 & 1 & 0.001& 0.7& ConceptNet&\begin{tabular}[c]{@{}lll@{}}85.46 & \textbf{ 85.94 } & 86.52\\ 
-85.49 & 85.55 & 85.61\\ 
+85.49 & 85.81 & 86.51\\ 
 \end{tabular} \\ \hline 
 LSTM-CRF & 200 & 20 & 1 & 0.001& 0.7& BERT&\begin{tabular}[c]{@{}lll@{}}82.33 & 83.73 & 84.95\\ 
-83.10 & \textbf{ 83.77 } & 84.98\\ 
+83.10 & \textbf{ 83.83 } & 84.98\\ 
 \end{tabular} \\ \hline 
 LSTM-CRF & 200 & 20 & 1 & 0.001& 0.7& ELMo&\begin{tabular}[c]{@{}lll@{}}84.50 & \textbf{ 85.53 } & 86.39\\ 
 84.12 & 85.29 & 86.29\\ 

@@ -42,8 +42,8 @@ git clone https://github.com/geektoni/concept-tagging-nn-spacy
 cd concept-tagging-nn-spacy
 git submodule update --init
 conda env create -f environment.yml
-python -m spacy download en_core_web_sm
 conda activate ctnns
+python -m spacy download en_core_web_sm
 ```
 The next step will be downloading the datasets. You will need to install
 **Git-LFS** to be able to do so. Please refer to the official instructions. Once installed,
@@ -57,6 +57,11 @@ If everything worked correctly, you should be able to have a working environment
 were to run the various scripts/experimens.
 
 If you encounter any errors, please feel free to open an issue on Github.
+
+**IMPORTANT: Be aware that the entire repository will take at least 2/3 GB of disk space
+on your machine. Deleting the .git directory after having downloaded all the material has
+proven itself to be beneficial to reduce the disk usage (as long as you do not want to contribute
+actively).**
 
 ## Usage
 
