@@ -1,5 +1,12 @@
 #!/bin/bash
+#
+# This software is distributed under MIT license (see LICENSE file).
+#
+# Authors: Giovanni De Toni
+#
 
+# Collect all the results inside the results directory and generate a complete
+# file with all the results.
 for f in `ls ./results/`;
 do
   if [ ! -z "$(ls -A ./results/${f})" ]; then

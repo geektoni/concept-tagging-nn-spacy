@@ -1,6 +1,16 @@
 import pprint
+#
+# This software is distributed under MIT license (see LICENSE file).
+#
+# Authors: Giovanni De Toni
+#
 
 def get_sorted(key):
+    """
+    Custom comparator for the methods
+    :param key: the method used
+    :return: an integer
+    """
     model = key.split("-")[0]
     value = key.split("-")[7]
 
@@ -85,15 +95,23 @@ if __name__ == "__main__":
         output.write("\\begin{table*}[]\n"
                      "\centering\n"
                      "\\resizebox{\\textwidth}{!}{%\n"
-                     "\\begin{tabular}{@{}llllllll@{}}\n")
-        output.write("Model & Hidden & Epochs & Batch & Lr & Drop rate & Emb & Min $F_1$ / Mean $F_1$ / Best $F_1$ \\\\ \hline \n")
+                     "\\begin{tabular}{@{}|l|l|l|l|l|l|l|l|@{}}\n\\hline")
+        output.write("\\textbf{Model} & \\textbf{Hidden} & \\textbf{Epochs} & \\textbf{Batch} & \\textbf{Lr} & \\textbf{Drop rate} & \\textbf{Emb} & \\textbf{Min} $F_1$ / \\textbf{Mean} $F_1$ / \\textbf{Best} $F_1$ \\\\ \\hline \n")
         for k in sorted(results.keys(), key=get_sorted):
             values = k.split("-")
-            embedding_name = values[7] if values[7] != "elmo_combined" else "elmo (comb)"
+            embedding_name = values[7] if values[7] != "elmo_combined" else "ELMo (fine tuned)"
+            embedding_name = embedding_name if embedding_name != "elmo" else "ELMo"
+            embedding_name = embedding_name if embedding_name != "bert" else "BERT"
+            embedding_name = embedding_name if embedding_name != "conceptnet" else "ConceptNet"
+            if embedding_name == "none":
+                embedding_name = "w2v\_trimmed"
+
+            model_name = "LSTM" if values[0] == "lstm" else "LSTM-CRF"
+
             output.write("{} & {} & {} & {} & {}& {}& {}&".format(
-                values[0], values[1], values[2], values[3], values[4], values[5], embedding_name
+                model_name, values[1], values[2], values[3], values[4], values[5], embedding_name
             ))
-            output.write("\\begin{tabular}[c]{@{}llll@{}}")
+            output.write("\\begin{tabular}[c]{@{}lll@{}}")
 
             # Compute max value
             max = 0
@@ -118,11 +136,11 @@ if __name__ == "__main__":
                         type = ""
 
                 if float(e[2]) == max:
-                    output.write("{:.2f} & \\textbf{{ {:.2f} }} & {:.2f} & {} \\\\ \n".format(
-                        float(e[5]), float(e[2]), float(e[4]), type))
+                    output.write("{:.2f} & \\textbf{{ {:.2f} }} & {:.2f}\\\\ \n".format(
+                        float(e[5]), float(e[2]), float(e[4])))
                 else:
-                    output.write("{:.2f} & {:.2f} & {:.2f} & {} \\\\ \n".format(
-                        float(e[5]), float(e[2]), float(e[4]), type))
+                    output.write("{:.2f} & {:.2f} & {:.2f}\\\\ \n".format(
+                        float(e[5]), float(e[2]), float(e[4])))
             output.write("\end{tabular} \\\\ \hline \n")
 
         output.write("\end{tabular}}\n"

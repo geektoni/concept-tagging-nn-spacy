@@ -1,4 +1,9 @@
 #!/bin/bash
+#
+# This software is distributed under MIT license (see LICENSE file).
+#
+# Authors: Giovanni De Toni
+#
 
 export model_type=${1}
 export hidden=${2}

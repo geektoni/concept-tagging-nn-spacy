@@ -1,4 +1,8 @@
-
+#
+# This software is distributed under MIT license (see LICENSE file).
+#
+# Authors: Giovanni De Toni
+#
 import subprocess
 import random
 

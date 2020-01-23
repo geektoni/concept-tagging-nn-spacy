@@ -6,6 +6,12 @@
 #PBS -V
 #PBS -m be
 
+#
+# This software is distributed under MIT license (see LICENSE file).
+#
+# Authors: Giovanni De Toni
+#
+
 # Strict bash mode
 # Disabled since it does not work well
 # on the cluster environment
