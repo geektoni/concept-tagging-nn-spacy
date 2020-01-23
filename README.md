@@ -64,7 +64,7 @@ with the ConceptNet, BERT and ELMO embeddings.
 **Run LSTM with ConceptNet and NER+POS+CHAR features**
 ```bash
 conda activate ctnns
-cd concept-tagging-nn-spacy/concept-tagging-with-neural-networks
+cd concept-tagging-nn-spacy/concept-tagging-with-neural-networks/src
 
 python run_model.py \
       --train ../../data/train.bz2 \
@@ -87,7 +87,7 @@ python run_model.py \
 **Run LSTM-CRF with ELMO (fine-tuned) and NER+POS+CHAR features**
 ```bash
 conda activate ctnns
-cd concept-tagging-nn-spacy/concept-tagging-with-neural-networks
+cd concept-tagging-nn-spacy/concept-tagging-with-neural-networks/src
 
 python run_model.py \
       --train ../../data/train_elmo.bz2 \
@@ -110,7 +110,7 @@ python run_model.py \
 **Run LSTM-CRF with BERT and NER+POS+CHAR features**
 ```bash
 conda activate ctnns
-cd concept-tagging-nn-spacy/concept-tagging-with-neural-networks
+cd concept-tagging-nn-spacy/concept-tagging-with-neural-networks/src
 
 python run_model.py \
       --train ../../data/train_bert.bz2 \
