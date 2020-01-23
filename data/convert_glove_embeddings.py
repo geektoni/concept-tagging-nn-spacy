@@ -1,3 +1,9 @@
+#
+# This software is distributed under MIT license (see LICENSE file).
+#
+# Authors: Giovanni De Toni
+#
+
 import argparse
 import pandas as pd
 

@@ -1,3 +1,9 @@
+#
+# This software is distributed under MIT license (see LICENSE file).
+#
+# Authors: Giovanni De Toni
+#
+
 import argparse
 import pandas as pd
 import numpy as np
@@ -33,5 +39,5 @@ for f in args.filename:
 
         df = pd.DataFrame(objects, columns=["token", "vector"])
         df.info()
-        df.to_pickle("conceptnet-300.bz2", compression="bz2")
+        df.to_pickle(f+"conceptnet-300.bz2", compression="bz2")
 
