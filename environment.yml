@@ -102,7 +102,6 @@ dependencies:
     - cycler==0.10.0
     - docutils==0.16
     - editdistance==0.5.3
-    - en-core-web-sm==2.1.0
     - flaky==3.6.1
     - flask==1.1.1
     - flask-cors==3.0.8
@@ -132,7 +131,6 @@ dependencies:
     - py==1.8.1
     - pygments==2.5.2
     - pytest==5.3.2
-    - python-graphviz==0.8.4
     - pytorch-pretrained-bert==0.6.2
     - pytorch-transformers==1.1.0
     - regex==2020.1.8

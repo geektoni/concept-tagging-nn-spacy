@@ -106,7 +106,7 @@ python run_model.py \
       --write_results=../../results/result.txt \
       --bidirectional \
       --more-features \
-      --embedder elmo-comb \
+      --embedder elmo-combined \
       --batch 1 \
       --lr 0.001 \
       --hidden_size 200 \
@@ -129,7 +129,7 @@ python run_model.py \
       --write_results=../../results/result.txt \
       --bidirectional \
       --more-features \
-      --embedder elmo-comb \
+      --embedder elmo-combined \
       --batch 1 \
       --lr 0.001 \
       --hidden_size 200 \
