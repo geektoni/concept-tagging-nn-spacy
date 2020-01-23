@@ -57,4 +57,87 @@ If you encounter any errors, please feel free to open an issue on Github.
 
 ## Usage
 
-In order to replicate the experiments, you can run the following commands:
+In order to replicate the experiments, you can follow the instructions of the original
+report for the classical usage. Below you can see some examples of the experiments
+with the ConceptNet, BERT and ELMO embeddings.
+
+**Run LSTM with ConceptNet and NER+POS+CHAR features**
+```bash
+conda activate ctnns
+cd concept-tagging-nn-spacy/concept-tagging-with-neural-networks
+
+python run_model.py \
+      --train ../../data/train.bz2 \
+      --test ../../data/test.bz2 \
+      --w2v ../../data/embeddings/conceptnet-300.bz2 \
+      --model lstm \
+      --epochs 15 \
+      --write_results=../../results/result.txt \
+      --bidirectional \
+      --more-features \
+      --embedder none \
+      --batch 20 \
+      --lr 0.001 \
+      --hidden_size 200 \
+      --drop 0.7 \
+      --unfreeze \
+      --c2v ../data/movies/c2v_20.pickle
+```
+
+**Run LSTM-CRF with ELMO (fine-tuned) and NER+POS+CHAR features**
+```bash
+conda activate ctnns
+cd concept-tagging-nn-spacy/concept-tagging-with-neural-networks
+
+python run_model.py \
+      --train ../../data/train_elmo.bz2 \
+      --test ../../data/test_elmo.bz2 \
+      --w2v ../data/movies/w2v_trimmed.pickle \
+      --model lstmcrf \
+      --epochs 10 \
+      --write_results=../../results/result.txt \
+      --bidirectional \
+      --more-features \
+      --embedder elmo-comb \
+      --batch 1 \
+      --lr 0.001 \
+      --hidden_size 200 \
+      --drop 0.7 \
+      --unfreeze \
+      --c2v ../data/movies/c2v_20.pickle
+```
+
+**Run LSTM-CRF with BERT and NER+POS+CHAR features**
+```bash
+conda activate ctnns
+cd concept-tagging-nn-spacy/concept-tagging-with-neural-networks
+
+python run_model.py \
+      --train ../../data/train_bert.bz2 \
+      --test ../../data/test_bert.bz2 \
+      --w2v ../data/movies/w2v_trimmed.pickle \
+      --model lstmcrf \
+      --epochs 10 \
+      --write_results=../../results/result.txt \
+      --bidirectional \
+      --more-features \
+      --embedder elmo-comb \
+      --batch 1 \
+      --lr 0.001 \
+      --hidden_size 200 \
+      --drop 0.7 \
+      --unfreeze \
+      --c2v ../data/movies/c2v_20.pickle
+```
+
+### Cluster usage
+To replicate exactly the experiments we run, you can use the `train_all_models.py` script which
+will generate several jobs on an HPC cluster by using `qsub`. 
+
+## License
+
+This software is distributed under MIT license (see LICENSE file).
+
+## Authors
+
+- Giovanni De Toni, [giovanni.detoni@studenti.unitn.it](mailto:giovanni.detoni@studenti.unitn.it)
