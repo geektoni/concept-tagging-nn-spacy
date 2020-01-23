@@ -5,8 +5,8 @@ to assigning concepts to words of a sentence.
 Their successes are made possible by employing good word representations (embeddings) which a Neural Network can understand. 
 This work evaluates several newly developed pre-trained embeddings (ELMo, BERT and ConceptNet) on the task of tagging sequences from the movie domain. We then compare the measurements with previous results of the literature.
 
-This repository contains the code for the second assignment of the Language Understanding Systems
-course of University of Trento teached by professor Giuseppe Riccardi.
+This repository contains the code for the second assignment of the [Language Understanding Systems](http://disi.unitn.it/~riccardi/page7/page13/page13.html)
+course at [University of Trento](https://unitn.it) teached by [Prof. Giuseppe Riccardi](http://disi.unitn.it/~riccardi).
 
 The final report can be found at this link [here](report/giovanni_de_toni_197814.pdf).
 
@@ -27,6 +27,9 @@ The scripts you can find here:
 a series of jobs and the results will be saved in the directory `results`;
 * `submit_jobs.sh`: submit a job inside the cluster;
 * `train_models.sh`: script which runs exactly one run of the models.
+
+The file `complete_results.txt` contains the results of all the experiments perfomed
+(more specifically, the max/min/mean F1 scores for all the runs).
 
 ## Install
 
