@@ -1,3 +1,9 @@
+#
+# This software is distributed under MIT license (see LICENSE file).
+#
+# Authors: Giovanni De Toni
+#
+
 import argparse
 import pickle
 import pandas as pd
@@ -20,8 +26,6 @@ if __name__ == "__main__":
                         default="spacy")
     parser.add_argument("--replace", type=str, help="Replace the O tag with a more informative value (keep, stem, lemma, word)",
                         default="keep")
-    parser.add_argument("--kfold", type=int, help="If it is greater than 0, then we generate files for k-fold validation.",
-                        default=0)
     parser.add_argument("--embedder", type=str, help="Type of embedder we want to use", default="none")
     parser.add_argument("--save-elmo-emb", action="store_true", default=True, help="Save the elmo embeddings separately.")
     parser.add_argument("--save", default="False", action="store_true", help="Save the dataset to file.")

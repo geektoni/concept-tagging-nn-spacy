@@ -1,3 +1,9 @@
+#
+# This software is distributed under MIT license (see LICENSE file).
+#
+# Authors: Giovanni De Toni
+#
+
 import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.stem import PorterStemmer
@@ -66,6 +72,7 @@ tagdict = [
 ":",
 "$"]
 
+# NER entities of spaCy
 nerdict = ["PERSON", "NORP", "FAC", "ORG", "GPE", "LOC", "PRODUCT", "EVENT", "WORK_OF_ART", "LAW",
            "LANGUAGE", "DATE", "TIME", "PERCENT", "MONEY", "QUANTITY", "ORDINAL", "CARDINAL"]
 
@@ -112,6 +119,15 @@ def ie_preprocess(phrase):
 
 
 def get_combined_representation(phrase, lemmas, pos, concepts, ner=[]):
+    """
+    Generate a combined representation of the phrase,lemmas,pos,concepts and ner
+    :param phrase: current phrase
+    :param lemmas: current lemmas
+    :param pos: POS tags for the phrase
+    :param concepts: concepts for the phrase
+    :param ner: NER recognition for the phrase
+    :return: a concatenation of the previous elements as a list
+    """
     result = []
     if len(ner) != 0:
         for v in zip(phrase, lemmas, pos, concepts, ner):
@@ -123,6 +139,14 @@ def get_combined_representation(phrase, lemmas, pos, concepts, ner=[]):
 
 
 def return_replaced_concepts(tokens, concepts, method="keep"):
+    """
+    Replace a list of tokens in which they are replaced by using
+    a certain method.
+    :param tokens: the tokens we want to replace
+    :param concepts: the current concepts associated to the tokens
+    :param method: replacement method (keep, lemma, stem, word)
+    :return: a list of replaced tokens
+    """
     if method=="keep":
         return concepts
     elif method=="lemma":
@@ -169,6 +193,11 @@ def ner_tool(row, method="spacy", replace_O="keep"):
             get_combined_representation(row["tokens"], row["lemmas"], row["pos"], row["concepts"], phrase)
 
 def one_hot_encoding_ner(ner):
+    """
+    Generate an one-hot encoding of the given NER entities
+    :param ner: a list with the NER entities
+    :return: a matrix with all the one-hot encoding
+    """
 
     total_enc = []
     for e in ner:

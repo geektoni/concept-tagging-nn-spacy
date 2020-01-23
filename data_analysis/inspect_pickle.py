@@ -1,3 +1,9 @@
+#
+# This software is distributed under MIT license (see LICENSE file).
+#
+# Authors: Giovanni De Toni
+#
+
 import argparse
 import pickle
 import numpy as np
@@ -5,6 +11,13 @@ import pandas as pd
 
 
 def _to_w2v_indexes(sentence, w2v_vocab):
+    """
+    Return which tokens in a sentence cannot be found inside the
+    given embedding
+    :param sentence: current sentence (tokenized)
+    :param w2v_vocab: embedding matrix
+    :return: a list of the tokens which were not found
+    """
     total_missing = []
     for word in sentence:
         if word in w2v_vocab:
@@ -23,10 +36,10 @@ parser.add_argument("filename", metavar='file', nargs=1, type=str, help="Path to
 parser.add_argument("--column", type=str, help="Print exactly this column")
 parser.add_argument("--quick-bert-convert", default=False, action="store_true", help="Quickly convert BERT to correct file")
 parser.add_argument("--save", default=False, action="store_true", help="Save the file to a manageable csv format")
-parser.add_argument("--convert-to-bz2", default=False, action="store_true")
-parser.add_argument("--read-emb", default="../embedding.pickle")
-parser.add_argument("--copy-ner-from", type=str, default="./train_updated.pickle")
-parser.add_argument("--copy-ner-to", type=str)
+parser.add_argument("--convert-to-bz2", default=False, help="Convert the given pickle to bz2", action="store_true")
+parser.add_argument("--read-emb", default="../embedding.pickle", help="File with the embedding")
+parser.add_argument("--copy-ner-from", type=str, help="Copy the ner column and add it to the current pickle", default="./train_updated.pickle")
+parser.add_argument("--copy-ner-to", type=str, help="Path to the pickle file which will received the copied NER.")
 args = parser.parse_args()
 
 objects = []

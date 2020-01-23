@@ -1,3 +1,9 @@
+#
+# This software is distributed under MIT license (see LICENSE file).
+#
+# Authors: Giovanni De Toni
+#
+
 import argparse
 import pickle
 import spacy
@@ -13,6 +19,11 @@ from pathlib import Path
 from tqdm import tqdm
 
 def convert_dataset_into_spacy(df):
+    """
+    Convert a dataset into the spacy tokens
+    :param df: dataframe
+    :return: list of converted entities
+    """
     data = []
 
     for index, row in df.iterrows():
